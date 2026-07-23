@@ -1,0 +1,24 @@
+---
+import Base from "../layouts/Base.astro";
+import Window from "../components/Window.astro";
+import Prompt from "../components/Prompt.astro";
+import ShellHeading from "../components/ShellHeading.astro";
+---
+
+<Base
+	title="Payloaded"
+	description="Enciclopedia estática y educativa sobre malware. Contenido conceptual y defensivo."
+	active="home"
+>
+	<Window>
+		<Prompt>get_payloaded</Prompt>
+		<ShellHeading>Welcome to</ShellHeading>
+		<p>
+			Enciclopedia estática y educativa sobre malware. Todo el contenido es
+			conceptual y defensivo: describe qué hace cada familia y cómo se detecta o
+			mitiga, nunca cómo construirla.
+		</p>
+		<ShellHeading>About us</ShellHeading>
+		<p>Basado en el TFM «NEMESIS: Análisis y estudio de Malware» (UCLM, 2025).</p>
+	</Window>
+</Base>

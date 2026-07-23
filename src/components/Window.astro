@@ -1,0 +1,18 @@
+---
+interface Props {
+  title?: string;
+}
+
+const { title } = Astro.props;
+---
+
+<div class="window">
+	<div class="window__bar">
+		<span class="window__dot" aria-hidden="true"></span>
+		{title && <span class="window__title">{title}</span>}
+		<span class="window__controls" aria-hidden="true">- [] X</span>
+	</div>
+	<div class="window__body">
+		<slot />
+	</div>
+</div>

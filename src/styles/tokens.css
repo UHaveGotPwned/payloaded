@@ -1,0 +1,35 @@
+:root {
+  /* color */
+  --bg: #050505;
+  --surface: #0b0d0b;
+  --chrome: #f2f2f0;
+  --chrome-ink: #111;
+  --ink: #d8dcd8;
+  --ink-dim: #4a5a4a; /* decorative only — fails AA contrast on body text */
+  --accent: #21e152;
+  --accent-ink: #032b0d;
+
+  /* typography */
+  --font-mono: "IBM Plex Mono", "JetBrains Mono", ui-monospace, monospace;
+  /* Reading measure. The window spans the viewport, so text needs its own cap
+     or lines run the full width of a wide monitor. */
+  --measure: 72ch;
+  --step-0: 1rem;
+  --step-1: 1.25rem;
+  /* Fluid: at their fixed sizes a monospace heading overflows the 360px
+     viewport the design system has to support. Upper bounds are the mockup. */
+  --step-2: clamp(1.25rem, 1rem + 1.1vw, 1.75rem);
+  --step-3: clamp(1.75rem, 1.2rem + 2.4vw, 2.5rem);
+
+  /* geometry */
+  --window-radius: 6px;
+  --space: 0.5rem;
+  /* The Taskbar is fixed, so the page reserves this room to keep it from
+     covering content. */
+  --taskbar-height: 2.75rem;
+
+  /* Raising this past ~0.1 starts competing with the window text. */
+  --watermark-opacity: 0.07;
+  /* Capped near the source image's native 465px so it never upscales blurry. */
+  --watermark-size: min(55%, 440px);
+}
