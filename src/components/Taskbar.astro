@@ -1,0 +1,33 @@
+---
+interface Item {
+  id: string;
+  label: string;
+  href: string;
+}
+
+interface Props {
+  items: Item[];
+  active?: string;
+}
+
+const { items, active } = Astro.props;
+---
+
+<nav class="taskbar" aria-label="Secciones del sitio">
+	<ul class="taskbar__list">
+		{
+			items.map((item) => (
+				<li class="taskbar__item">
+					<a
+						class:list={["taskbar__link", { "taskbar__link--active": item.id === active }]}
+						href={item.href}
+						aria-current={item.id === active ? "page" : undefined}
+					>
+						{item.label}
+					</a>
+					<span class="taskbar__sep" aria-hidden="true">/</span>
+				</li>
+			))
+		}
+	</ul>
+</nav>

@@ -1,0 +1,233 @@
+.window {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  background: var(--surface);
+  border: 1px solid var(--chrome);
+  border-radius: var(--window-radius);
+}
+
+/* On a pseudo-element so the opacity dims the skull without dragging the text
+   down with it. The relative url() lets Vite rewrite it with the configured
+   `base` — hardcoding "/payloaded/..." would break other deployments. */
+.window::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-image: url("../assets/skull.png");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: var(--watermark-size);
+  opacity: var(--watermark-opacity);
+  pointer-events: none;
+}
+
+.window__bar,
+.window__body {
+  position: relative;
+  z-index: 1;
+}
+
+.window__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space);
+  padding: calc(var(--space) * 0.75) var(--space);
+  background: var(--chrome);
+  color: var(--chrome-ink);
+}
+
+.window__dot {
+  width: 0.6em;
+  height: 0.6em;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.window__title {
+  flex: 1;
+  overflow: hidden;
+  font-size: 0.85em;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.window__controls {
+  letter-spacing: 0.15em;
+}
+
+.window__body {
+  flex: 1;
+  padding: calc(var(--space) * 3);
+}
+
+.prompt {
+  margin: 0;
+  font-size: var(--step-3);
+  font-weight: 500;
+  color: var(--accent);
+}
+
+/* Decoration, not content: in ::before screen readers never announce it. */
+.prompt::before {
+  content: "> ";
+}
+
+.prompt::after {
+  content: "";
+  display: inline-block;
+  width: 0.55em;
+  height: 1em;
+  margin-left: 0.15em;
+  background: var(--accent);
+  vertical-align: -0.12em;
+  animation: cursor-blink 1.1s steps(1) infinite;
+}
+
+@keyframes cursor-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .prompt::after {
+    animation: none;
+  }
+}
+
+.shell-heading {
+  color: var(--ink);
+}
+
+.shell-heading::before {
+  content: "$ ";
+  color: var(--accent);
+}
+
+.taskbar {
+  position: fixed;
+  inset: auto 0 0 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  min-height: var(--taskbar-height);
+  padding: 0 calc(var(--space) * 2);
+  background: var(--bg);
+  border-top: 1px solid var(--ink-dim);
+}
+
+.taskbar__list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: calc(var(--space) * 0.5) 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  max-width: none;
+}
+
+.taskbar__item {
+  display: flex;
+  align-items: center;
+  margin: 0;
+}
+
+.taskbar__link {
+  padding: 0.15em 0.5em;
+  color: var(--accent);
+  text-decoration: none;
+  border-radius: 3px;
+}
+
+.taskbar__link:hover {
+  text-decoration: underline;
+}
+
+.taskbar__link--active {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+.taskbar__link--active:hover {
+  text-decoration: none;
+}
+
+.taskbar__sep {
+  color: var(--ink-dim);
+}
+
+.breadcrumb__list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 0.5em;
+  margin: 0 0 calc(var(--space) * 3);
+  padding: 0;
+  list-style: none;
+  max-width: none;
+  color: var(--ink-dim);
+  font-size: 0.9em;
+}
+
+.breadcrumb__item {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  margin: 0;
+}
+
+.breadcrumb__link {
+  color: var(--accent);
+}
+
+.prose > :first-child {
+  margin-top: 0;
+}
+
+.prose :is(h2, h3) {
+  margin-top: calc(var(--space) * 5);
+}
+
+/* Content section headings echo ShellHeading's "$ " so the article and the
+   chrome read as one terminal. */
+.prose h2::before {
+  content: "$ ";
+  color: var(--accent);
+}
+
+.prose :is(code, kbd, samp) {
+  padding: 0.1em 0.35em;
+  background: var(--surface);
+  border: 1px solid var(--ink-dim);
+  border-radius: 3px;
+}
+
+.prose pre {
+  /* Long defanged IoCs must scroll here, not stretch the page. */
+  overflow-x: auto;
+  padding: calc(var(--space) * 2);
+  background: var(--surface);
+  border: 1px solid var(--ink-dim);
+  border-radius: var(--window-radius);
+}
+
+.prose pre code {
+  padding: 0;
+  background: none;
+  border: 0;
+}
+
+.prose blockquote {
+  margin-inline: 0;
+  padding-left: calc(var(--space) * 2);
+  border-left: 2px solid var(--accent);
+  color: var(--ink);
+}

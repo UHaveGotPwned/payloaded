@@ -1,0 +1,36 @@
+---
+// Materialises the flat taxonomy hierarchy. The pages layer resolves `parent`
+// into this ordered trail; the last crumb is the current page and carries no
+// link.
+interface Crumb {
+  label: string;
+  href?: string;
+}
+
+interface Props {
+  items: Crumb[];
+}
+
+const { items } = Astro.props;
+---
+
+<nav class="breadcrumb" aria-label="Migas de pan">
+	<ol class="breadcrumb__list">
+		{
+			items.map((crumb, i) => (
+				<li class="breadcrumb__item">
+					{crumb.href ? (
+						<a class="breadcrumb__link" href={crumb.href}>
+							{crumb.label}
+						</a>
+					) : (
+						<span aria-current="page">{crumb.label}</span>
+					)}
+					{i < items.length - 1 && (
+						<span class="breadcrumb__sep" aria-hidden="true">/</span>
+					)}
+				</li>
+			))
+		}
+	</ol>
+</nav>
