@@ -1,7 +1,6 @@
 ---
-// Materialises the flat taxonomy hierarchy. The pages layer resolves `parent`
-// into this ordered trail; the last crumb is the current page and carries no
-// link.
+// The pages layer resolves `parent` into this trail; the last crumb is the
+// current page and carries no link.
 interface Crumb {
   label: string;
   href?: string;
@@ -14,7 +13,7 @@ interface Props {
 const { items } = Astro.props;
 ---
 
-<nav class="breadcrumb" aria-label="Migas de pan">
+<nav class="breadcrumb" aria-label="Breadcrumb">
 	<ol class="breadcrumb__list">
 		{
 			items.map((crumb, i) => (

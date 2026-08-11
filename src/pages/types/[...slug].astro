@@ -1,0 +1,71 @@
+---
+import type { GetStaticPaths } from "astro";
+import { getEntry, render } from "astro:content";
+import Entry from "../../layouts/Entry.astro";
+import EntryMenu from "../../components/EntryMenu.astro";
+import ShellHeading from "../../components/ShellHeading.astro";
+import MetaList from "../../components/MetaList.astro";
+import { assertContentIntegrity, count, listEntries } from "../../lib/content";
+
+export const getStaticPaths = (async () => {
+  await assertContentIntegrity();
+  const types = await listEntries("types");
+  return types.map((entry) => ({
+    params: { slug: entry.id },
+    props: { entry, children: types.filter((t) => t.data.parent?.id === entry.id) },
+  }));
+}) satisfies GetStaticPaths;
+
+const { entry, children } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const { Content } = await render(entry);
+
+const parent = entry.data.parent ? await getEntry(entry.data.parent) : undefined;
+const vectors = await Promise.all(entry.data.vectors.map((vector) => getEntry(vector)));
+
+// The flat URL hides the hierarchy, so the breadcrumb is where it surfaces.
+const breadcrumb = [
+  { label: "Types", href: `${base}/types` },
+  ...(parent ? [{ label: parent.data.title, href: `${base}/types/${parent.id}` }] : []),
+  { label: entry.data.title },
+];
+
+const subtypes = children.map((child) => ({
+  id: child.id,
+  label: child.data.title,
+  tagline: child.data.summary,
+  href: `${base}/types/${child.id}`,
+}));
+
+const vectorLinks = vectors
+  .filter((vector) => vector !== undefined)
+  .map((vector) => ({ label: vector.data.title, href: `${base}/attack-vectors/${vector.id}` }));
+---
+
+<Entry
+	title={entry.data.title}
+	description={entry.data.summary}
+	active="types"
+	breadcrumb={breadcrumb}
+	statusFacts={[
+		parent ? `subtipo de ${parent.data.title}` : count(subtypes.length, "subtipo"),
+		count(vectorLinks.length, "vector", "vectores"),
+		count(entry.data.notableCases.length, "caso"),
+	]}
+	statusMode="TYPES"
+>
+	<Content />
+
+	{
+		subtypes.length > 0 && (
+			<>
+				<ShellHeading id="subtipos">Subtipos</ShellHeading>
+				<EntryMenu items={subtypes} />
+			</>
+		)
+	}
+
+	<MetaList heading="Vectores de entrada" items={vectorLinks} />
+	<MetaList heading="Casos notables" items={entry.data.notableCases} />
+	<MetaList heading="Fuentes" items={entry.data.sources} tone="quiet" />
+</Entry>

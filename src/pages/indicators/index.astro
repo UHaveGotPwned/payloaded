@@ -1,0 +1,35 @@
+---
+import Base from "../../layouts/Base.astro";
+import Window from "../../components/Window.astro";
+import Prompt from "../../components/Prompt.astro";
+import EntryMenu from "../../components/EntryMenu.astro";
+import { count, listEntries } from "../../lib/content";
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const entries = await listEntries("indicators");
+const items = entries.map((entry) => ({
+  id: entry.id,
+  label: `${entry.data.kind.toUpperCase()} — ${entry.data.title}`,
+  tagline: entry.data.summary,
+  href: `${base}/indicators/${entry.id}`,
+}));
+---
+
+<Base
+	title="IOC/IOA · Payloaded"
+	description="Indicadores de compromiso y de ataque: qué rastros deja una intrusión."
+	active="indicators"
+	statusFacts={[count(items.length, "entrada")]}
+	statusMode="IOC/IOA"
+>
+	<Window>
+		<Prompt>IOC/IOA</Prompt>
+		{
+			items.length > 0 ? (
+				<EntryMenu items={items} />
+			) : (
+				<p>Todavía no hay entradas en esta sección.</p>
+			)
+		}
+	</Window>
+</Base>

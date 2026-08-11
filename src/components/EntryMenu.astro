@@ -1,0 +1,47 @@
+---
+interface Item {
+  id: string;
+  label: string;
+  tagline?: string;
+  href: string;
+}
+
+interface Props {
+  items: Item[];
+  active?: string;
+  /** Collapse past `limit` and link the overflow here. Omit to list them all. */
+  more?: { href: string; label?: string };
+  limit?: number;
+}
+
+const { items, active, more, limit = 7 } = Astro.props;
+
+const overflows = more !== undefined && items.length > limit;
+const visible = overflows ? items.slice(0, limit) : items;
+---
+
+<ul class="entry-menu">
+	{
+		visible.map((item) => (
+			<li class="entry-menu__item">
+				<a
+					class:list={["entry-menu__link", { "entry-menu__link--active": item.id === active }]}
+					href={item.href}
+					aria-current={item.id === active ? "page" : undefined}
+				>
+					{item.label}
+				</a>
+				{item.tagline && <p class="entry-menu__tagline">{item.tagline}</p>}
+			</li>
+		))
+	}
+	{
+		overflows && (
+			<li class="entry-menu__item">
+				<a class="entry-menu__link" href={more.href}>
+					{more.label ?? "More"}
+				</a>
+			</li>
+		)
+	}
+</ul>

@@ -1,0 +1,83 @@
+---
+interface Props {
+  /** Empty values are dropped, so callers can pass conditionals unfiltered. */
+  facts?: (string | null | undefined | false)[];
+  mode?: string;
+}
+
+const { facts = [], mode } = Astro.props;
+const shown = facts.filter((fact): fact is string => Boolean(fact));
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+---
+
+<div class="status" data-search>
+	{shown.length > 0 && (
+		<span class="status__facts" aria-hidden="true">{shown.join(" · ")}</span>
+	)}
+
+	{/* The affordance: "/" is the shortcut, but it is a real button so it works
+	    by tap on mobile, where there is no keyboard to press "/" on. */}
+	<button type="button" class="status__trigger" data-search-open>
+		<span class="status__key" aria-hidden="true">/</span> buscar
+	</button>
+
+	{/* A plain GET form: Enter navigates to the results page with no JavaScript
+	    involved, so search works even if the script never runs. */}
+	<form class="status__form" action={`${base}/search`} method="get" role="search" hidden data-search-form>
+		<label class="visually-hidden" for="search-input">Buscar en la wiki</label>
+		<span class="status__key" aria-hidden="true">/</span>
+		<input
+			class="status__input"
+			id="search-input"
+			name="q"
+			type="search"
+			autocomplete="off"
+			spellcheck="false"
+			placeholder="escribe y pulsa Enter"
+			data-search-input
+		/>
+		<button type="button" class="status__clear" data-search-close>
+			<span aria-hidden="true">✕</span>
+			<span class="visually-hidden">Cerrar la búsqueda</span>
+		</button>
+	</form>
+
+	{mode && <span class="status__mode" aria-hidden="true">{mode}</span>}
+</div>
+
+<script>
+	const trigger = document.querySelector<HTMLButtonElement>("[data-search-open]");
+	const form = document.querySelector<HTMLFormElement>("[data-search-form]");
+	const input = document.querySelector<HTMLInputElement>("[data-search-input]");
+	const close = document.querySelector<HTMLButtonElement>("[data-search-close]");
+
+	if (trigger && form && input && close) {
+		const open = () => {
+			form.hidden = false;
+			trigger.hidden = true;
+			input.focus();
+		};
+
+		const dismiss = () => {
+			form.hidden = true;
+			trigger.hidden = false;
+			input.value = "";
+		};
+
+		trigger.addEventListener("click", open);
+		close.addEventListener("click", dismiss);
+
+		document.addEventListener("keydown", (event) => {
+			const typing =
+				event.target instanceof HTMLElement &&
+				["INPUT", "TEXTAREA"].includes(event.target.tagName);
+
+			if (event.key === "/" && !typing) {
+				event.preventDefault();
+				open();
+			} else if (event.key === "Escape" && !form.hidden) {
+				dismiss();
+			}
+		});
+	}
+</script>

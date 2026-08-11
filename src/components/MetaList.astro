@@ -1,0 +1,59 @@
+---
+import ShellHeading from "./ShellHeading.astro";
+
+interface Item {
+  label: string;
+  href?: string;
+}
+
+interface Props {
+  heading: string;
+  items: (Item | string)[];
+  /** "quiet" renders references as a citation footer rather than a section. */
+  tone?: "normal" | "quiet";
+}
+
+const { heading, items, tone = "normal" } = Astro.props;
+const normalised = items.map((item) => (typeof item === "string" ? { label: item } : item));
+
+/** Mirrors the anchors Markdown generates for its own headings. */
+const id = heading
+  .toLowerCase()
+  .normalize("NFD")
+  .replace(/[̀-ͯ]/g, "")
+  .replace(/[^a-z0-9]+/g, "-")
+  .replace(/^-|-$/g, "");
+---
+
+{
+	normalised.length > 0 &&
+		(tone === "quiet" ? (
+			<div class="refs">
+				<h2 class="refs__heading" id={id}>
+					{heading}
+				</h2>
+				<ul class="refs__list">
+					{normalised.map((item) => (
+						<li>{item.href ? <a href={item.href}>{item.label}</a> : item.label}</li>
+					))}
+				</ul>
+			</div>
+		) : (
+			<>
+				<ShellHeading id={id}>{heading}</ShellHeading>
+				<ul class="meta-list">
+					{normalised.map((item) => (
+						<li>
+							{item.href ? (
+								<a class="meta-list__link" href={item.href}>
+									{item.label}
+								</a>
+							) : (
+								item.label
+							)}
+						</li>
+					))}
+				</ul>
+			</>
+		))
+}

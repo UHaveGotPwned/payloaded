@@ -1,5 +1,10 @@
 ---
-// "$ " prefix comes from CSS, not the text.
+interface Props {
+  /** Matches the anchors Markdown headings get, so every section is linkable. */
+  id?: string;
+}
+
+const { id } = Astro.props;
 ---
 
-<h2 class="shell-heading"><slot /></h2>
+<h2 class="shell-heading" id={id}><slot /></h2>

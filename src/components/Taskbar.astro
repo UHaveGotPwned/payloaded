@@ -2,6 +2,8 @@
 interface Item {
   id: string;
   label: string;
+  /** Swapped in by CSS on narrow screens to keep the bar on one row. */
+  labelShort?: string;
   href: string;
 }
 
@@ -13,7 +15,7 @@ interface Props {
 const { items, active } = Astro.props;
 ---
 
-<nav class="taskbar" aria-label="Secciones del sitio">
+<nav class="taskbar" aria-label="Site sections">
 	<ul class="taskbar__list">
 		{
 			items.map((item) => (
@@ -22,8 +24,16 @@ const { items, active } = Astro.props;
 						class:list={["taskbar__link", { "taskbar__link--active": item.id === active }]}
 						href={item.href}
 						aria-current={item.id === active ? "page" : undefined}
+						aria-label={item.labelShort ? item.label : undefined}
 					>
-						{item.label}
+						{item.labelShort ? (
+							<>
+								<span class="taskbar__label">{item.label}</span>
+								<span class="taskbar__label--short">{item.labelShort}</span>
+							</>
+						) : (
+							item.label
+						)}
 					</a>
 					<span class="taskbar__sep" aria-hidden="true">/</span>
 				</li>

@@ -16,8 +16,6 @@ Una enciclopedia educativa dedicada al estudio del malware.
   - [Disclaimer](#disclaimer)
   - [Tech Stack](#tech-stack)
   - [Project Structure](#project-structure)
-  - [Team Roles](#team-roles)
-  - [Getting Started](#getting-started)
   - [Contributing](#contributing)
   - [License](#license)
 - [Español](#español)
@@ -25,8 +23,6 @@ Una enciclopedia educativa dedicada al estudio del malware.
   - [Aviso legal](#aviso-legal)
   - [Stack tecnológico](#stack-tecnológico)
   - [Estructura del proyecto](#estructura-del-proyecto)
-  - [Roles del equipo](#roles-del-equipo)
-  - [Primeros pasos](#primeros-pasos)
   - [Contribuir](#contribuir)
   - [Licencia](#licencia)
 
@@ -58,6 +54,43 @@ intended for, and must not be used for, any malicious or illegal purpose.
 
 ### Tech Stack
 
+
+### Project Structure
+
+Every article lives under `src/content/`. **Folders mirror the data model:
+where entries form a hierarchy, folders show it; where they don't, the files
+sit flat.**
+
+```
+src/content/
+├── families/                    flat YAML — taxonomy labels, no article body
+│   ├── ransomware.yaml
+│   └── virus.yaml
+├── types/                       grouped by family: entries carry a `parent`
+│   ├── ransomware/
+│   │   ├── index.md               the family entry
+│   │   ├── leakware.md            a subtype
+│   │   └── locker-ransomware.md
+│   └── virus/
+│       ├── index.mdx
+│       ├── resident-virus.md
+│       └── images/                assets sit beside the entries that use them
+├── attack-vectors/              flat — no vector contains another
+├── malware/                     flat
+└── indicators/                  flat
+```
+
+Two consequences worth knowing before you move anything:
+
+- **Folders are for organization only.** Ids are flattened, so
+  `types/ransomware/leakware.md` is served at `/types/leakware`. Reclassifying
+  an entry by dragging it to another folder never changes its URL.
+- **Two files can therefore collide.** `types/virus/foo.md` and
+  `types/ransomware/foo.md` would both claim the id `foo`. The build fails
+  loudly if that happens, rather than dropping one silently.
+
+`.md` and `.mdx` coexist in the same collection. Use `.mdx` only when an entry
+needs a component — a figure anchored to a specific passage, for instance.
 
 ### Contributing
 
@@ -114,6 +147,43 @@ y técnico, la detección y la defensa frente a estas amenazas. Este proyecto
 no está destinado a, ni debe utilizarse para, ningún fin malicioso o ilegal.
 
 ### Stack tecnológico
+
+### Estructura del proyecto
+
+Todos los artículos viven en `src/content/`. **Las carpetas reflejan el modelo
+de datos: donde las entradas forman una jerarquía, las carpetas la muestran;
+donde no la hay, los ficheros van sueltos.**
+
+```
+src/content/
+├── families/                    YAML plano — etiquetas de taxonomía, sin artículo
+│   ├── ransomware.yaml
+│   └── virus.yaml
+├── types/                       agrupado por familia: las entradas tienen `parent`
+│   ├── ransomware/
+│   │   ├── index.md               la entrada de la familia
+│   │   ├── leakware.md            un subtipo
+│   │   └── locker-ransomware.md
+│   └── virus/
+│       ├── index.mdx
+│       ├── resident-virus.md
+│       └── images/                los recursos van junto a quien los usa
+├── attack-vectors/              plano — ningún vector contiene a otro
+├── malware/                     plano
+└── indicators/                  plano
+```
+
+Dos consecuencias que conviene conocer antes de mover nada:
+
+- **Las carpetas son organizativas.** Los ids se aplanan, así que
+  `types/ransomware/leakware.md` se sirve en `/types/leakware`. Reclasificar una
+  entrada arrastrándola a otra carpeta nunca cambia su URL.
+- **Por eso dos ficheros pueden colisionar.** `types/virus/foo.md` y
+  `types/ransomware/foo.md` reclamarían el mismo id `foo`. El build falla de
+  forma explícita si ocurre, en lugar de descartar uno en silencio.
+
+`.md` y `.mdx` conviven en la misma colección. Usa `.mdx` solo cuando una entrada
+necesite un componente — por ejemplo una figura anclada a un pasaje concreto.
 
 ### Contribuir
 
