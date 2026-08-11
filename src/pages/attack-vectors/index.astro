@@ -1,0 +1,35 @@
+---
+import Base from "../../layouts/Base.astro";
+import Window from "../../components/Window.astro";
+import Prompt from "../../components/Prompt.astro";
+import EntryMenu from "../../components/EntryMenu.astro";
+import { count, listEntries } from "../../lib/content";
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const entries = await listEntries("attack-vectors");
+const items = entries.map((entry) => ({
+  id: entry.id,
+  label: entry.data.title,
+  tagline: entry.data.summary,
+  href: `${base}/attack-vectors/${entry.id}`,
+}));
+---
+
+<Base
+	title="Attack vectors · Payloaded"
+	description="Vías por las que el malware alcanza un sistema."
+	active="attack-vectors"
+	statusFacts={[count(items.length, "entrada")]}
+	statusMode="VECTORS"
+>
+	<Window>
+		<Prompt>Attack vectors</Prompt>
+		{
+			items.length > 0 ? (
+				<EntryMenu items={items} />
+			) : (
+				<p>Todavía no hay entradas en esta sección.</p>
+			)
+		}
+	</Window>
+</Base>

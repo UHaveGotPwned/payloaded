@@ -1,0 +1,34 @@
+---
+# Example article: placeholder content that exercises the schema, not the final text.
+title: "Ingeniería social"
+summary: "El factor humano como vía de entrada: engaño, miedo y phishing como mecanismos de compromiso inicial."
+order: 1
+draft: false
+sources:
+  - "TFM NEMESIS, §3.1.2"
+  - "IBM — ¿Qué es el malware?"
+---
+
+import Figure from "../../components/Figure.astro";
+import phishingPhases from "./images/phishing-phases.png";
+
+La seguridad técnica de un sistema bien administrado —buenas prácticas, mitigación de riesgos, división correcta de privilegios— es difícil de vulnerar. Por eso el eslabón atacado con más frecuencia es el humano: una persona puede ser engañada o presionada con miedo hasta cometer el error que la técnica no permite.
+
+## Phishing
+
+<Figure
+  src={phishingPhases}
+  alt="Tres fases encadenadas: mensaje fraudulento, engaño al destinatario y acción en beneficio del atacante"
+  caption="Fases del phishing"
+/>
+
+Es la forma más común de ingeniería social: mensajes fraudulentos que intentan que el usuario realice acciones en beneficio de un tercero (abrir un adjunto, pulsar un enlace, entregar credenciales).
+
+## Defensa
+
+- Revisar los enlaces **antes** de pulsarlos: dominio real, no el texto visible.
+- Analizar adjuntos y URLs sospechosas con servicios como VirusTotal.
+- Examinar el mensaje completo en busca de elementos que no encajen: remitente, tono, urgencia artificial, errores.
+- Desconfiar por defecto de cualquier comunicación que pida acción inmediata sobre credenciales o pagos.
+
+La ingeniería social no explota código: explota confianza. La contramedida es procedimiento y escepticismo, no software.

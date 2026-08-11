@@ -1,0 +1,316 @@
+/* Everything inside the terminal window. Chrome styles live in chrome.css. */
+
+.prose {
+  max-width: var(--content-width);
+}
+
+.prose > :first-child {
+  margin-top: 0;
+}
+
+/* Running prose only: headings and list links stay mono, they read as shell. */
+.prose :is(p, li, td, th, blockquote) {
+  font-family: var(--font-sans);
+}
+
+.entry-menu__link,
+.meta-list__link,
+.refs__list li {
+  font-family: var(--font-mono);
+}
+
+/* The references heading is an h2 inside .prose, so it has to be excluded here
+   or these rules out-specify its own and hand it back the "$" and the spacing. */
+.prose :is(h2, h3):not(.refs__heading) {
+  margin-top: calc(var(--space) * 4);
+}
+
+/* Echoes ShellHeading so article and chrome read as one terminal. h3 included,
+   or the first subsection written would silently break the pattern. */
+.prose :is(h2, h3):not(.refs__heading)::before {
+  content: "$ ";
+  color: var(--ink-dim);
+}
+
+.prose :is(strong, b) {
+  color: var(--accent-warm);
+}
+
+/* A heading already carries its own colour; tinting bold inside it would clash. */
+.prose :is(h1, h2, h3, h4) :is(strong, b) {
+  color: inherit;
+}
+
+.prose :is(code, kbd, samp) {
+  padding: 0.1em 0.35em;
+  background: var(--code-bg);
+  border: 1px solid var(--ink-dim);
+  border-radius: 3px;
+}
+
+.prose pre {
+  /* Long defanged IoCs must scroll here, not stretch the page. */
+  overflow-x: auto;
+  padding: calc(var(--space) * 2);
+  background: var(--code-bg);
+  border: 1px solid var(--ink-dim);
+  border-radius: var(--window-radius);
+}
+
+.prose pre code {
+  padding: 0;
+  background: none;
+  border: 0;
+}
+
+/* Markdown emits these unclassed; the browser defaults assume a light page. */
+.prose table {
+  width: 100%;
+  max-width: var(--measure);
+  margin: 0 0 calc(var(--space) * 2);
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.prose :is(th, td) {
+  padding: calc(var(--space) * 0.75) var(--space);
+  border-bottom: 1px solid var(--ink-dim);
+  vertical-align: top;
+}
+
+.prose th {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.prose hr {
+  max-width: var(--measure);
+  margin: calc(var(--space) * 4) 0;
+  border: 0;
+  border-top: 1px solid var(--ink-dim);
+}
+
+.prose blockquote {
+  margin-inline: 0;
+  padding-left: calc(var(--space) * 2);
+  border-left: 2px solid var(--accent);
+  color: var(--ink);
+}
+
+/* The results page reuses the EntryMenu, so only the form needs styling. */
+.search-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space);
+  margin-bottom: calc(var(--space) * 3);
+  max-width: var(--measure);
+}
+
+.search-form__input {
+  flex: 1;
+  min-width: 12rem;
+  padding: calc(var(--space) * 1.25) calc(var(--space) * 1.5);
+  background: var(--code-bg);
+  border: 1px solid var(--ink-dim);
+  border-radius: var(--window-radius);
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: var(--step-0);
+}
+
+.search-form__input:focus-visible {
+  border-color: var(--accent);
+}
+
+.search-form__submit {
+  padding: calc(var(--space) * 1.25) calc(var(--space) * 2);
+  background: var(--accent);
+  border: 0;
+  border-radius: var(--window-radius);
+  color: var(--accent-ink);
+  font-family: var(--font-mono);
+  font-size: var(--step-0);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.search-status {
+  margin-bottom: calc(var(--space) * 3);
+  font-family: var(--font-sans);
+  color: var(--ink);
+}
+
+.entry-menu {
+  display: grid;
+  gap: calc(var(--space) * 2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  max-width: none;
+}
+
+.entry-menu__item {
+  margin: 0;
+}
+
+.entry-menu__tagline {
+  margin: calc(var(--space) * 0.5) 0 0;
+  color: var(--ink);
+  font-size: 0.9em;
+}
+
+/* Same shape as the EntryMenu: a bullet would repeat what the "> " says. */
+.meta-list {
+  display: grid;
+  gap: calc(var(--space) * 0.75);
+  margin: 0 0 calc(var(--space) * 2);
+  padding: 0;
+  list-style: none;
+  max-width: var(--measure);
+}
+
+.meta-list li {
+  margin: 0;
+}
+
+.entry-menu__link,
+.meta-list__link {
+  font-size: var(--step-1);
+  text-decoration: none;
+}
+
+/* "> " marks anything navigable; plain items in the same list stay unmarked. */
+.entry-menu__link::before,
+.meta-list__link::before {
+  content: "> ";
+}
+
+.entry-menu__link:hover,
+.meta-list__link:hover {
+  text-decoration: underline;
+}
+
+/* Floated rather than gridded: the column is capped at --measure, so a right
+   float lands beside the exact passage it illustrates. */
+.figure {
+  margin: 0 0 calc(var(--space) * 3);
+}
+
+.figure--side {
+  float: right;
+  clear: right;
+  width: var(--figure-width);
+  margin-left: calc(var(--space) * 4);
+  margin-right: var(--figure-gutter);
+}
+
+.figure--full {
+  max-width: var(--measure);
+}
+
+.figure img {
+  border: 1px solid var(--ink-dim);
+  border-radius: var(--window-radius);
+}
+
+.figure__caption {
+  margin-top: var(--space);
+  font-size: 0.85em;
+}
+
+.figure__caption::before {
+  content: "— ";
+  color: var(--ink-dim);
+}
+
+/* The reading column now fills the width, so a float would squeeze the text. */
+@media (max-width: 60rem) {
+  .figure--side {
+    float: none;
+    width: auto;
+    max-width: var(--measure);
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
+
+/* Apparatus, not article, so no "$": that marker means "section of the text".
+   Size and a rule carry the demotion; --ink-dim would fail AA here. */
+.refs {
+  margin-top: calc(var(--space) * 3);
+  padding-top: calc(var(--space) * 1.5);
+  border-top: 1px solid var(--ink-dim);
+  font-size: 0.85em;
+}
+
+.refs__heading {
+  margin: 0 0 calc(var(--space) * 0.25);
+  font-size: 1em;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--ink);
+}
+
+/* "?" rather than the "$" of article sections: this block answers where the
+   text comes from, it is not a section of it. */
+.refs__heading::before {
+  content: "? ";
+  color: var(--ink-dim);
+}
+
+/* Inline: a handful of citations should not rival the article's own sections. */
+.refs__list {
+  margin: 0;
+  padding: 0;
+  max-width: var(--measure);
+  list-style: none;
+}
+
+.refs__list li {
+  display: inline;
+  margin: 0;
+}
+
+.refs__list li + li::before {
+  content: " · ";
+  color: var(--ink-dim);
+}
+
+/* On every page, so it must not compete. --ink-dim would fail AA here. */
+.edu-notice {
+  clear: both;
+  margin-top: calc(var(--space) * 3);
+  font-size: 0.85em;
+}
+
+.edu-notice p {
+  margin: 0;
+  max-width: var(--measure);
+}
+
+.edu-notice p::before {
+  content: "# ";
+  color: var(--ink-dim);
+}
+
+.credits {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: calc(var(--space) * 0.5) calc(var(--space) * 2);
+  margin: calc(var(--space) * 2) 0 0;
+  max-width: var(--measure);
+}
+
+/* Real text: --ink-dim fails AA and is reserved for ::before markers. */
+.credits dt {
+  color: var(--ink);
+}
+
+.credits dt::after {
+  content: ":";
+}
+
+.credits dd {
+  margin: 0;
+  color: var(--accent-warm);
+}

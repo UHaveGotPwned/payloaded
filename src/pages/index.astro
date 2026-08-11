@@ -9,6 +9,8 @@ import ShellHeading from "../components/ShellHeading.astro";
 	title="Payloaded"
 	description="Enciclopedia estática y educativa sobre malware. Contenido conceptual y defensivo."
 	active="home"
+	statusFacts={["enciclopedia de malware", "TFM NEMESIS · UCLM 2025"]}
+	statusMode="HOME"
 >
 	<Window>
 		<Prompt>get_payloaded</Prompt>
@@ -20,5 +22,11 @@ import ShellHeading from "../components/ShellHeading.astro";
 		</p>
 		<ShellHeading>About us</ShellHeading>
 		<p>Basado en el TFM «NEMESIS: Análisis y estudio de Malware» (UCLM, 2025).</p>
+		<dl class="credits">
+			<dt>Autor TFM</dt>
+			<dd>Juan Caravantes Algaba</dd>
+			<dt>Autor Payloaded</dt>
+			<dd>UHaveGotPwned</dd>
+		</dl>
 	</Window>
 </Base>

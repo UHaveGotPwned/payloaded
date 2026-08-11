@@ -1,0 +1,43 @@
+---
+# Example article: placeholder content that exercises the schema, not the final text.
+title: "Virus"
+summary: "La primera familia de malware: necesita infectar archivos del sistema para replicarse, siguiendo un ciclo de vida de cuatro fases."
+order: 2
+draft: false
+family: "virus"
+vectors:
+  - "social-engineering"
+  - "removable-devices"
+notableCases:
+  - "Brain (1986) — considerado el primer virus para PC, se propagaba por disquete"
+  - "Melissa (1999) — macrovirus que se reenviaba a los contactos del correo"
+  - "CIH / Chernobyl (1998) — llegó a sobrescribir la BIOS, inutilizando el equipo"
+sources:
+  - "TFM NEMESIS, §3.3.1"
+---
+
+import Figure from "../../../components/Figure.astro";
+import virusLifecycle from "./images/virus-lifecycle.png";
+
+Los **virus informáticos** fueron el primer tipo de malware en existir. Como sus homólogos biológicos, necesitan un huésped: un archivo del equipo al que adherirse para duplicarse y hacerse persistentes. Sus objetivos van desde corromper sistemas e interrumpir servicios hasta descargar malware adicional. Se distribuyen habitualmente por correo electrónico, software pirata, SMS y documentos infectados.
+
+## Ciclo de vida
+
+<Figure
+  src={virusLifecycle}
+  alt="Las cuatro fases del virus en secuencia: durmiente, propagación, activación y ejecución"
+  caption="Las cuatro fases, en orden"
+/>
+
+Un virus atraviesa cuatro fases antes de liberar su carga:
+
+1. **Fase durmiente.** El virus permanece desactivado y oculto, esperando activación.
+2. **Fase de propagación.** La fase "vírica": se auto-replica por el sistema. Durante la replicación su código puede variar sutilmente para dificultar la detección, dejando copias con mutaciones repartidas por el equipo.
+3. **Fase de activación.** Se dispara por una acción del usuario que puede no tener relación aparente con el virus (por ejemplo, el quinto arranque tras la infección). Ese desacople temporal enmascara el origen de la infección.
+4. **Fase de ejecución.** El virus ejecuta su carga maliciosa.
+
+## Clasificación
+
+Los virus se agrupan según dónde se alojan y cómo persisten. El caso más relevante para el análisis es el **virus residente**, que se carga en memoria y sobrevive al reinicio; tiene entrada propia por la cantidad de mecanismos de persistencia que emplea, cada uno de los cuales es a su vez un lugar concreto donde buscarlo.
+
+> Diferencia clave con los gusanos: el virus necesita un archivo huésped y ayuda para propagarse; el gusano es autosuficiente y se extiende solo por la red.

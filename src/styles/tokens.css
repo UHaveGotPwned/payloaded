@@ -2,34 +2,52 @@
   /* color */
   --bg: #050505;
   --surface: #0b0d0b;
-  --chrome: #f2f2f0;
+  /* 12% off near-white: the title bar is a large light block on a dark page and
+     glares at full brightness, but going much darker reads as grey, not chrome. */
+  --chrome: #d5d5d3;
   --chrome-ink: #111;
   --ink: #d8dcd8;
   --ink-dim: #4a5a4a; /* decorative only — fails AA contrast on body text */
   --accent: #21e152;
   --accent-ink: #032b0d;
+  /* The other CRT phosphor. Far enough from --accent in hue to read as a
+     separate signal, so emphasis never competes with links and prompts. */
+  --accent-warm: #e8a33d;
+  /* Used on the dark search field, so it needs the lighter red: the deep one
+     drops to 2.4:1 there. */
+  --danger: #e14f4f;
+  --code-bg: #1c211c;
 
   /* typography */
   --font-mono: "IBM Plex Mono", "JetBrains Mono", ui-monospace, monospace;
-  /* Reading measure. The window spans the viewport, so text needs its own cap
-     or lines run the full width of a wide monitor. */
-  --measure: 72ch;
-  --step-0: 1rem;
-  --step-1: 1.25rem;
-  /* Fluid: at their fixed sizes a monospace heading overflows the 360px
-     viewport the design system has to support. Upper bounds are the mockup. */
-  --step-2: clamp(1.25rem, 1rem + 1.1vw, 1.75rem);
-  --step-3: clamp(1.75rem, 1.2rem + 2.4vw, 2.5rem);
+  /* Chrome, headings and code stay mono; only running prose uses this. */
+  --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  --measure: 85ch;
+  /* Full width so the floated figure lands past the skull, which is fixed to the
+     centre of the viewport: text left, watermark centre, figure right. Capped in
+     rem as well so the figure does not grow absurd on an ultrawide screen. */
+  --content-width: 100%;
+  --figure-width: min(34%, 30rem);
+  /* Keeps the figure off the window edge, which the 100% content width would
+     otherwise let it touch. */
+  --figure-gutter: calc(var(--space) * 6);
+  /* 18px base: the derived sizes (captions, breadcrumb, notice) are fractions of
+     it, and at a 16px base they fell to 13.6px — below comfortable reading.
+     Kept in rem so the user's own browser setting still scales everything. */
+  --step-0: 1.125rem;
+  --step-1: 1.375rem;
+  /* The lower clamp bounds are pinned by the 360px viewport: a monospace
+     heading any larger overflows it. Only the upper bounds grew. */
+  --step-2: clamp(1.375rem, 1.1rem + 1.2vw, 2rem);
+  --step-3: clamp(1.75rem, 1.3rem + 2vw, 2.75rem);
 
   /* geometry */
   --window-radius: 6px;
   --space: 0.5rem;
-  /* The Taskbar is fixed, so the page reserves this room to keep it from
-     covering content. */
   --taskbar-height: 2.75rem;
+  /* The title bar is fixed, so the body reserves this much room beneath it. */
+  --bar-height: 2.25rem;
 
-  /* Raising this past ~0.1 starts competing with the window text. */
   --watermark-opacity: 0.07;
-  /* Capped near the source image's native 465px so it never upscales blurry. */
   --watermark-size: min(55%, 440px);
 }

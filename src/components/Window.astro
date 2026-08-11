@@ -1,15 +1,16 @@
 ---
 interface Props {
+  /** The application name, not the page path: the Breadcrumb already says
+   *  where you are. */
   title?: string;
 }
 
-const { title } = Astro.props;
+const { title = "payloaded" } = Astro.props;
 ---
 
 <div class="window">
 	<div class="window__bar">
-		<span class="window__dot" aria-hidden="true"></span>
-		{title && <span class="window__title">{title}</span>}
+		<span class="window__title">{title}</span>
 		<span class="window__controls" aria-hidden="true">- [] X</span>
 	</div>
 	<div class="window__body">

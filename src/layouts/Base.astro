@@ -1,26 +1,40 @@
 ---
 import "../styles/tokens.css";
 import "../styles/base.css";
-import "../styles/components.css";
+import "../styles/chrome.css";
+import "../styles/content.css";
 import Taskbar from "../components/Taskbar.astro";
-import fontBody from "../assets/fonts/ibm-plex-mono-400.woff2?url";
+import StatusLine from "../components/StatusLine.astro";
+import fontMono from "../assets/fonts/ibm-plex-mono-400.woff2?url";
+import fontSans from "../assets/fonts/ibm-plex-sans-400.woff2?url";
 
 interface Props {
   title: string;
   description?: string;
   active?: string;
   lang?: string;
+  statusFacts?: string[];
+  statusMode?: string;
 }
 
-const { title, description, active, lang = "es" } = Astro.props;
-const base = import.meta.env.BASE_URL;
+const { title, description, active, lang = "es", statusFacts, statusMode } = Astro.props;
 
-// Hrefs are built here so Taskbar stays dumb: it never touches routing or BASE_URL.
+// Trailing slash stripped so `${base}/path` never yields "//path", which a
+// browser would read as a protocol-relative URL. Matters if base becomes "/".
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : undefined;
+
+// Built here so Taskbar never touches routing or BASE_URL.
 const sections = [
   { id: "home", label: "[_/_]", href: `${base}/` },
   { id: "malware", label: "Malware", href: `${base}/malware` },
   { id: "types", label: "Types", href: `${base}/types` },
-  { id: "attack-vectors", label: "Attack vector", href: `${base}/attack-vectors` },
+  {
+    id: "attack-vectors",
+    label: "Attack vector",
+    labelShort: "AV",
+    href: `${base}/attack-vectors`,
+  },
   { id: "indicators", label: "IOC/IOA", href: `${base}/indicators` },
 ];
 ---
@@ -33,14 +47,24 @@ const sections = [
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
 		{description && <meta name="description" content={description} />}
+		{canonical && <link rel="canonical" href={canonical} />}
+		<meta property="og:site_name" content="Payloaded" />
+		<meta property="og:type" content="website" />
+		<meta property="og:locale" content="es_ES" />
+		<meta property="og:title" content={title} />
+		{description && <meta property="og:description" content={description} />}
+		{canonical && <meta property="og:url" content={canonical} />}
 		<link rel="icon" type="image/png" href={`${base}/favicon.png`} />
 		<link rel="icon" href={`${base}/favicon.ico`} sizes="any" />
-		<link rel="preload" href={fontBody} as="font" type="font/woff2" crossorigin />
+		<link rel="preload" href={fontSans} as="font" type="font/woff2" crossorigin />
+		<link rel="preload" href={fontMono} as="font" type="font/woff2" crossorigin />
 	</head>
 	<body>
-		<main>
+		<a class="skip-link" href="#content">Skip to content</a>
+		<main id="content">
 			<slot />
 		</main>
+		<StatusLine facts={statusFacts} mode={statusMode} />
 		<Taskbar items={sections} active={active} />
 	</body>
 </html>

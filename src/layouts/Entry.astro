@@ -3,6 +3,7 @@ import Base from "./Base.astro";
 import Window from "../components/Window.astro";
 import Prompt from "../components/Prompt.astro";
 import Breadcrumb from "../components/Breadcrumb.astro";
+import EduNotice from "../components/EduNotice.astro";
 
 interface Crumb {
   label: string;
@@ -13,19 +14,30 @@ interface Props {
   title: string;
   description?: string;
   active?: string;
-  windowTitle?: string;
   breadcrumb?: Crumb[];
+  statusFacts?: string[];
+  statusMode?: string;
 }
 
-const { title, description, active, windowTitle, breadcrumb = [] } = Astro.props;
+const { title, description, active, breadcrumb = [], statusFacts, statusMode } =
+  Astro.props;
 ---
 
-<Base title={title} description={description} active={active}>
-	<Window title={windowTitle}>
+<Base
+	title={`${title} · Payloaded`}
+	description={description}
+	active={active}
+	statusFacts={statusFacts}
+	statusMode={statusMode}
+>
+	<Window>
 		{breadcrumb.length > 0 && <Breadcrumb items={breadcrumb} />}
-		<Prompt>{title}</Prompt>
-		<div class="prose">
-			<slot />
-		</div>
+		<article data-pagefind-body>
+			<Prompt>{title}</Prompt>
+			<div class="prose">
+				<slot />
+			</div>
+			<EduNotice />
+		</article>
 	</Window>
 </Base>
