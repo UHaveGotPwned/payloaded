@@ -54,7 +54,6 @@ intended for, and must not be used for, any malicious or illegal purpose.
 
 ### Tech Stack
 
-
 ### Project Structure
 
 Every article lives under `src/content/`. **Folders mirror the data model:
@@ -105,18 +104,48 @@ any content:
 Please open an issue to discuss significant changes before submitting a pull
 request.
 
+#### Code blocks in articles
+
+Malware analysis needs to show evidence, so fenced blocks are allowed — but the
+language decides whether they pass review. Every fence must carry one; an
+untagged block hides what it holds and is always rejected.
+
+**Cleared by default** — read-only evidence and detection logic. An analyst can
+study these; nobody can run them:
+
+```
+yara · sigma · snort · asm · nasm · text · log · json · yaml · ini · diff
+```
+
+**Anything executable** must be declared per article, so the exception appears
+in the diff instead of slipping past review:
+
+```yaml
+---
+title: "Virus residente"
+codeBlocks:
+  - "powershell"
+---
+```
+
+Declaring a language is not a licence to publish a payload: rule 1 still
+applies. The declaration exists so a reviewer is told where to look.
+
+`npm test` enforces all of this, along with defanged IoCs and the absence of
+absolute internal links.
+
 ### License
 
 This repository uses two separate licenses, keeping source code and wiki
 content under distinct terms:
 
-| Component | License | File |
-|---|---|---|
-| Source code (frontend, scripts, configuration) | MIT | [`LICENSE`](./LICENSE.md) |
+| Component                                       | License         | File                                      |
+| ----------------------------------------------- | --------------- | ----------------------------------------- |
+| Source code (frontend, scripts, configuration)  | MIT             | [`LICENSE`](./LICENSE.md)                 |
 | Wiki content (articles, explanations, diagrams) | CC BY-NC-SA 4.0 | [`CONTENT-LICENSE`](./CONTENT-LICENSE.md) |
 
 The content license is **CC BY-NC-SA 4.0** because the wiki content is derived
-from the master's thesis (TFM) *"NEMESIS: Análisis y estudio de Malware"*
+from the master's thesis (TFM) _"NEMESIS: Análisis y estudio de Malware"_
 (Juan Caravantes Algaba, UCLM, 2025), which is released under those same terms.
 
 ---
@@ -198,17 +227,48 @@ que cualquier contenido:
 Abre un issue para discutir cambios significativos antes de enviar un pull
 request.
 
+#### Bloques de código en los artículos
+
+El análisis de malware necesita mostrar evidencias, así que los bloques de código
+están permitidos — pero es el lenguaje el que decide si pasan la revisión. Toda
+valla debe llevar uno; un bloque sin etiquetar oculta lo que contiene y se
+rechaza siempre.
+
+**Permitidos por defecto** — evidencia y lógica de detección. Un analista puede
+estudiarlas; nadie puede ejecutarlas:
+
+```
+yara · sigma · snort · asm · nasm · text · log · json · yaml · ini · diff
+```
+
+**Cualquier cosa ejecutable** debe declararse artículo por artículo, para que la
+excepción aparezca en el diff en lugar de colarse sin revisión:
+
+```yaml
+---
+title: "Virus residente"
+codeBlocks:
+  - "powershell"
+---
+```
+
+Declarar un lenguaje no autoriza a publicar un payload: la regla 1 sigue
+vigente. La declaración existe para avisar a quien revisa de dónde mirar.
+
+`npm test` comprueba todo esto, junto con los IoC defanged y la ausencia de
+enlaces internos absolutos.
+
 ### Licencia
 
 Este repositorio utiliza dos licencias separadas, manteniendo el código
 fuente y el contenido de la wiki bajo términos distintos:
 
-| Componente | Licencia | Fichero |
-|---|---|---|
-| Código fuente (frontend, scripts, configuración) | MIT | [`LICENSE`](./LICENSE.md) |
+| Componente                                                 | Licencia        | Fichero                                   |
+| ---------------------------------------------------------- | --------------- | ----------------------------------------- |
+| Código fuente (frontend, scripts, configuración)           | MIT             | [`LICENSE`](./LICENSE.md)                 |
 | Contenido de la wiki (artículos, explicaciones, diagramas) | CC BY-NC-SA 4.0 | [`CONTENT-LICENSE`](./CONTENT-LICENSE.md) |
 
 La licencia del contenido es **CC BY-NC-SA 4.0** porque el contenido de la
-wiki deriva del Trabajo de Fin de Máster (TFM) *«NEMESIS: Análisis y estudio
-de Malware»* (Juan Caravantes Algaba, UCLM, 2025), publicado bajo esos mismos
+wiki deriva del Trabajo de Fin de Máster (TFM) _«NEMESIS: Análisis y estudio
+de Malware»_ (Juan Caravantes Algaba, UCLM, 2025), publicado bajo esos mismos
 términos.
