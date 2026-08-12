@@ -6,21 +6,20 @@ import Breadcrumb from "../components/Breadcrumb.astro";
 import EduNotice from "../components/EduNotice.astro";
 
 interface Crumb {
-  label: string;
-  href?: string;
+	label: string;
+	href?: string;
 }
 
 interface Props {
-  title: string;
-  description?: string;
-  active?: string;
-  breadcrumb?: Crumb[];
-  statusFacts?: string[];
-  statusMode?: string;
+	title: string;
+	description?: string;
+	active?: string;
+	breadcrumb?: Crumb[];
+	statusFacts?: (string | null | undefined | false)[];
+	statusMode?: string;
 }
 
-const { title, description, active, breadcrumb = [], statusFacts, statusMode } =
-  Astro.props;
+const { title, description, active, breadcrumb = [], statusFacts, statusMode } = Astro.props;
 ---
 
 <Base

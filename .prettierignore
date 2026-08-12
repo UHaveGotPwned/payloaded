@@ -1,0 +1,7 @@
+dist/
+.astro/
+node_modules/
+package-lock.json
+
+# Prose is wrapped by hand; reflowing it would churn the diff on every edit.
+src/content/

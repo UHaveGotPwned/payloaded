@@ -13,13 +13,13 @@ const types = await listEntries("types");
 
 // A family is browsable only if it has an entry to land on.
 const items = families
-  .filter((family) => types.some((type) => type.id === family.id))
-  .map((family) => ({
-    id: family.id,
-    label: family.data.name,
-    tagline: family.data.tagline,
-    href: `${base}/types/${family.id}`,
-  }));
+	.filter((family) => types.some((type) => type.id === family.id))
+	.map((family) => ({
+		id: family.id,
+		label: family.data.name,
+		tagline: family.data.tagline,
+		href: `${base}/types/${family.id}`,
+	}));
 ---
 
 <Base

@@ -3,26 +3,28 @@ import { Image } from "astro:assets";
 import type { ImageMetadata } from "astro";
 
 interface Props {
-  src: ImageMetadata;
-  alt: string;
-  caption?: string;
-  /** "side" floats it into the empty column; "full" spans the reading measure. */
-  placement?: "side" | "full";
+	src: ImageMetadata;
+	alt: string;
+	caption?: string;
+	/** "side" floats it into the empty column; "full" spans the reading measure. */
+	placement?: "side" | "full";
 }
 
 const { src, alt, caption, placement = "side" } = Astro.props;
 
 /** Covers 1x through 3x displays. Anything wider than the source is dropped:
  *  Astro never upscales, so asking for it would only emit duplicates. */
-const widths = [...new Set([400, 640, 960, 1280, 1600].filter((w) => w < src.width).concat(src.width))];
+const widths = [
+	...new Set([400, 640, 960, 1280, 1600].filter((w) => w < src.width).concat(src.width)),
+];
 
 /** Must mirror --figure-width and the stacking breakpoint, or the browser picks
  *  the wrong variant: a `sizes` that overstates the slot wastes bytes, one that
  *  understates it renders blurry. */
 const sizes =
-  placement === "full"
-    ? "(max-width: 60rem) 92vw, min(92vw, 51rem)"
-    : "(max-width: 60rem) 92vw, min(33vw, 30rem)";
+	placement === "full"
+		? "(max-width: 60rem) 92vw, min(92vw, 51rem)"
+		: "(max-width: 60rem) 92vw, min(33vw, 30rem)";
 ---
 
 <figure class:list={["figure", `figure--${placement}`]}>

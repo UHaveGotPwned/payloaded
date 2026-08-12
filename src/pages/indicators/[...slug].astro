@@ -6,18 +6,15 @@ import MetaList from "../../components/MetaList.astro";
 import { count, listEntries } from "../../lib/content";
 
 export const getStaticPaths = (async () => {
-  const entries = await listEntries("indicators");
-  return entries.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+	const entries = await listEntries("indicators");
+	return entries.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
 }) satisfies GetStaticPaths;
 
 const { entry } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 const { Content } = await render(entry);
 
-const breadcrumb = [
-  { label: "IOC/IOA", href: `${base}/indicators` },
-  { label: entry.data.title },
-];
+const breadcrumb = [{ label: "IOC/IOA", href: `${base}/indicators` }, { label: entry.data.title }];
 ---
 
 <Entry

@@ -1,17 +1,17 @@
 ---
 interface Item {
-  id: string;
-  label: string;
-  tagline?: string;
-  href: string;
+	id: string;
+	label: string;
+	tagline?: string;
+	href: string;
 }
 
 interface Props {
-  items: Item[];
-  active?: string;
-  /** Collapse past `limit` and link the overflow here. Omit to list them all. */
-  more?: { href: string; label?: string };
-  limit?: number;
+	items: Item[];
+	active?: string;
+	/** Collapse past `limit` and link the overflow here. Omit to list them all. */
+	more?: { href: string; label?: string };
+	limit?: number;
 }
 
 const { items, active, more, limit = 7 } = Astro.props;

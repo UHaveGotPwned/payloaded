@@ -1,8 +1,8 @@
 ---
 interface Props {
-  /** Empty values are dropped, so callers can pass conditionals unfiltered. */
-  facts?: (string | null | undefined | false)[];
-  mode?: string;
+	/** Empty values are dropped, so callers can pass conditionals unfiltered. */
+	facts?: (string | null | undefined | false)[];
+	mode?: string;
 }
 
 const { facts = [], mode } = Astro.props;
@@ -11,19 +11,34 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 ---
 
 <div class="status" data-search>
-	{shown.length > 0 && (
-		<span class="status__facts" aria-hidden="true">{shown.join(" · ")}</span>
-	)}
+	{
+		shown.length > 0 && (
+			<span class="status__facts" aria-hidden="true">
+				{shown.join(" · ")}
+			</span>
+		)
+	}
 
-	{/* The affordance: "/" is the shortcut, but it is a real button so it works
-	    by tap on mobile, where there is no keyboard to press "/" on. */}
+	{
+		/* The affordance: "/" is the shortcut, but it is a real button so it works
+	    by tap on mobile, where there is no keyboard to press "/" on. */
+	}
 	<button type="button" class="status__trigger" data-search-open>
 		<span class="status__key" aria-hidden="true">/</span> buscar
 	</button>
 
-	{/* A plain GET form: Enter navigates to the results page with no JavaScript
-	    involved, so search works even if the script never runs. */}
-	<form class="status__form" action={`${base}/search`} method="get" role="search" hidden data-search-form>
+	{
+		/* A plain GET form: Enter navigates to the results page with no JavaScript
+	    involved, so search works even if the script never runs. */
+	}
+	<form
+		class="status__form"
+		action={`${base}/search`}
+		method="get"
+		role="search"
+		hidden
+		data-search-form
+	>
 		<label class="visually-hidden" for="search-input">Buscar en la wiki</label>
 		<span class="status__key" aria-hidden="true">/</span>
 		<input
@@ -42,7 +57,13 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 		</button>
 	</form>
 
-	{mode && <span class="status__mode" aria-hidden="true">{mode}</span>}
+	{
+		mode && (
+			<span class="status__mode" aria-hidden="true">
+				{mode}
+			</span>
+		)
+	}
 </div>
 
 <script>
@@ -69,8 +90,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 		document.addEventListener("keydown", (event) => {
 			const typing =
-				event.target instanceof HTMLElement &&
-				["INPUT", "TEXTAREA"].includes(event.target.tagName);
+				event.target instanceof HTMLElement && ["INPUT", "TEXTAREA"].includes(event.target.tagName);
 
 			if (event.key === "/" && !typing) {
 				event.preventDefault();

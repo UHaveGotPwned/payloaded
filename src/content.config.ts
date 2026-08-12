@@ -1,5 +1,6 @@
 import { defineCollection, reference, z } from "astro:content";
 import { glob } from "astro/loaders";
+import { idFromPath } from "./lib/integrity";
 
 /** Adding a family means adding a YAML file, never editing this one. */
 const families = defineCollection({
@@ -18,20 +19,18 @@ const entry = z.object({
   order: z.number().default(99),
   draft: z.boolean().default(false),
   sources: z.array(z.string()).default([]),
+  /** Runnable languages this article may fence, so the exception shows up in
+   *  review. The always-safe set lives in tests/content/policy.test.ts. */
+  codeBlocks: z.array(z.string()).default([]),
 });
 
-/** Subfolders group entries by family, but ids stay flat so a URL never depends
- *  on where the file sits: reclassifying a subtype must not break its links.
- *  `index.md` takes the name of its folder, any other file its own. */
+/** Shared with the guard: two implementations would drift and duplicate
+ *  detection would silently stop working. */
 const markdown = (dir: string) =>
   glob({
     pattern: "**/*.{md,mdx}",
     base: `./src/content/${dir}`,
-    generateId: ({ entry }) => {
-      const segments = entry.replace(/\.mdx?$/, "").split("/");
-      const name = segments.pop() ?? entry;
-      return name === "index" ? (segments.pop() ?? name) : name;
-    },
+    generateId: ({ entry }) => idFromPath(entry),
   });
 
 export const collections = {
