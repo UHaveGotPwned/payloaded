@@ -2,15 +2,15 @@
 import ShellHeading from "./ShellHeading.astro";
 
 interface Item {
-  label: string;
-  href?: string;
+	label: string;
+	href?: string;
 }
 
 interface Props {
-  heading: string;
-  items: (Item | string)[];
-  /** "quiet" renders references as a citation footer rather than a section. */
-  tone?: "normal" | "quiet";
+	heading: string;
+	items: (Item | string)[];
+	/** "quiet" renders references as a citation footer rather than a section. */
+	tone?: "normal" | "quiet";
 }
 
 const { heading, items, tone = "normal" } = Astro.props;
@@ -18,11 +18,11 @@ const normalised = items.map((item) => (typeof item === "string" ? { label: item
 
 /** Mirrors the anchors Markdown generates for its own headings. */
 const id = heading
-  .toLowerCase()
-  .normalize("NFD")
-  .replace(/[̀-ͯ]/g, "")
-  .replace(/[^a-z0-9]+/g, "-")
-  .replace(/^-|-$/g, "");
+	.toLowerCase()
+	.normalize("NFD")
+	.replace(/[̀-ͯ]/g, "")
+	.replace(/[^a-z0-9]+/g, "-")
+	.replace(/^-|-$/g, "");
 ---
 
 {

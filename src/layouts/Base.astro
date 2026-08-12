@@ -9,12 +9,12 @@ import fontMono from "../assets/fonts/ibm-plex-mono-400.woff2?url";
 import fontSans from "../assets/fonts/ibm-plex-sans-400.woff2?url";
 
 interface Props {
-  title: string;
-  description?: string;
-  active?: string;
-  lang?: string;
-  statusFacts?: string[];
-  statusMode?: string;
+	title: string;
+	description?: string;
+	active?: string;
+	lang?: string;
+	statusFacts?: (string | null | undefined | false)[];
+	statusMode?: string;
 }
 
 const { title, description, active, lang = "es", statusFacts, statusMode } = Astro.props;
@@ -26,16 +26,16 @@ const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : un
 
 // Built here so Taskbar never touches routing or BASE_URL.
 const sections = [
-  { id: "home", label: "[_/_]", href: `${base}/` },
-  { id: "malware", label: "Malware", href: `${base}/malware` },
-  { id: "types", label: "Types", href: `${base}/types` },
-  {
-    id: "attack-vectors",
-    label: "Attack vector",
-    labelShort: "AV",
-    href: `${base}/attack-vectors`,
-  },
-  { id: "indicators", label: "IOC/IOA", href: `${base}/indicators` },
+	{ id: "home", label: "[_/_]", href: `${base}/` },
+	{ id: "malware", label: "Malware", href: `${base}/malware` },
+	{ id: "types", label: "Types", href: `${base}/types` },
+	{
+		id: "attack-vectors",
+		label: "Attack vector",
+		labelShort: "AV",
+		href: `${base}/attack-vectors`,
+	},
+	{ id: "indicators", label: "IOC/IOA", href: `${base}/indicators` },
 ];
 ---
 

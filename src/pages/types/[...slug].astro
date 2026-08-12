@@ -8,12 +8,12 @@ import MetaList from "../../components/MetaList.astro";
 import { assertContentIntegrity, count, listEntries } from "../../lib/content";
 
 export const getStaticPaths = (async () => {
-  await assertContentIntegrity();
-  const types = await listEntries("types");
-  return types.map((entry) => ({
-    params: { slug: entry.id },
-    props: { entry, children: types.filter((t) => t.data.parent?.id === entry.id) },
-  }));
+	await assertContentIntegrity();
+	const types = await listEntries("types");
+	return types.map((entry) => ({
+		params: { slug: entry.id },
+		props: { entry, children: types.filter((t) => t.data.parent?.id === entry.id) },
+	}));
 }) satisfies GetStaticPaths;
 
 const { entry, children } = Astro.props;
@@ -25,21 +25,21 @@ const vectors = await Promise.all(entry.data.vectors.map((vector) => getEntry(ve
 
 // The flat URL hides the hierarchy, so the breadcrumb is where it surfaces.
 const breadcrumb = [
-  { label: "Types", href: `${base}/types` },
-  ...(parent ? [{ label: parent.data.title, href: `${base}/types/${parent.id}` }] : []),
-  { label: entry.data.title },
+	{ label: "Types", href: `${base}/types` },
+	...(parent ? [{ label: parent.data.title, href: `${base}/types/${parent.id}` }] : []),
+	{ label: entry.data.title },
 ];
 
 const subtypes = children.map((child) => ({
-  id: child.id,
-  label: child.data.title,
-  tagline: child.data.summary,
-  href: `${base}/types/${child.id}`,
+	id: child.id,
+	label: child.data.title,
+	tagline: child.data.summary,
+	href: `${base}/types/${child.id}`,
 }));
 
 const vectorLinks = vectors
-  .filter((vector) => vector !== undefined)
-  .map((vector) => ({ label: vector.data.title, href: `${base}/attack-vectors/${vector.id}` }));
+	.filter((vector) => vector !== undefined)
+	.map((vector) => ({ label: vector.data.title, href: `${base}/attack-vectors/${vector.id}` }));
 ---
 
 <Entry

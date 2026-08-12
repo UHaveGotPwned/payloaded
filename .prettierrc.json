@@ -1,0 +1,15 @@
+{
+  "plugins": ["prettier-plugin-astro"],
+  "printWidth": 100,
+  "singleQuote": false,
+  "overrides": [
+    {
+      "files": "*.astro",
+      "options": { "parser": "astro", "useTabs": true }
+    },
+    {
+      "files": ["*.md", "*.mdx", "*.yaml", "*.yml"],
+      "options": { "useTabs": false }
+    }
+  ]
+}

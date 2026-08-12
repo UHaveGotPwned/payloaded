@@ -6,8 +6,8 @@ import MetaList from "../../components/MetaList.astro";
 import { count, listEntries } from "../../lib/content";
 
 export const getStaticPaths = (async () => {
-  const entries = await listEntries("attack-vectors");
-  return entries.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+	const entries = await listEntries("attack-vectors");
+	return entries.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
 }) satisfies GetStaticPaths;
 
 const { entry } = Astro.props;
@@ -15,8 +15,8 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 const { Content } = await render(entry);
 
 const breadcrumb = [
-  { label: "Attack vectors", href: `${base}/attack-vectors` },
-  { label: entry.data.title },
+	{ label: "Attack vectors", href: `${base}/attack-vectors` },
+	{ label: entry.data.title },
 ];
 ---
 

@@ -1,15 +1,15 @@
 ---
 interface Item {
-  id: string;
-  label: string;
-  /** Swapped in by CSS on narrow screens to keep the bar on one row. */
-  labelShort?: string;
-  href: string;
+	id: string;
+	label: string;
+	/** Swapped in by CSS on narrow screens to keep the bar on one row. */
+	labelShort?: string;
+	href: string;
 }
 
 interface Props {
-  items: Item[];
-  active?: string;
+	items: Item[];
+	active?: string;
 }
 
 const { items, active } = Astro.props;
@@ -35,7 +35,9 @@ const { items, active } = Astro.props;
 							item.label
 						)}
 					</a>
-					<span class="taskbar__sep" aria-hidden="true">/</span>
+					<span class="taskbar__sep" aria-hidden="true">
+						/
+					</span>
 				</li>
 			))
 		}

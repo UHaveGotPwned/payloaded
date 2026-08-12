@@ -8,10 +8,10 @@ import { count, listEntries } from "../../lib/content";
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 const entries = await listEntries("indicators");
 const items = entries.map((entry) => ({
-  id: entry.id,
-  label: `${entry.data.kind.toUpperCase()} — ${entry.data.title}`,
-  tagline: entry.data.summary,
-  href: `${base}/indicators/${entry.id}`,
+	id: entry.id,
+	label: `${entry.data.kind.toUpperCase()} — ${entry.data.title}`,
+	tagline: entry.data.summary,
+	href: `${base}/indicators/${entry.id}`,
 }));
 ---
 

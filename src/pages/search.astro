@@ -6,11 +6,7 @@ import Prompt from "../components/Prompt.astro";
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 ---
 
-<Base
-	title="Buscar · Payloaded"
-	description="Buscar en la wiki."
-	statusMode="SEARCH"
->
+<Base title="Buscar · Payloaded" description="Buscar en la wiki." statusMode="SEARCH">
 	<Window>
 		<Prompt>Buscar</Prompt>
 
@@ -32,10 +28,12 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 	</Window>
 </Base>
 
-{/* is:inline keeps this out of the bundler. Vite rewrites a dynamic import into
+{
+	/* is:inline keeps this out of the bundler. Vite rewrites a dynamic import into
     its preload helper and leaves an unreplaced __VITE_PRELOAD__ behind, which
     throws at runtime; untouched, the native import() just works. The trade-off
-    is plain JS and the base arriving through a data attribute. */}
+    is plain JS and the base arriving through a data attribute. */
+}
 <script is:inline>
 	(function () {
 		var status = document.querySelector("[data-search-status]");
