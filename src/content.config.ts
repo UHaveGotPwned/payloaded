@@ -1,4 +1,6 @@
-import { defineCollection, reference, z } from "astro:content";
+import { defineCollection, reference } from "astro:content";
+// Not the `z` re-exported by astro:content, which is deprecated in Astro 7.
+import { z } from "zod";
 import { glob } from "astro/loaders";
 import { idFromPath } from "./lib/integrity";
 

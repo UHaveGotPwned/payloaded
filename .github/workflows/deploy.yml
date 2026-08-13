@@ -22,7 +22,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      # Installs deps, runs `astro build`, and uploads dist/ as the Pages artifact.
+      # Installs deps, runs `npm run build` — Astro plus the Pagefind postbuild —
+      # and uploads dist/ as the Pages artifact.
       # Pinned to match package.json engines; the action defaults to Node 20 and
       # ignores engines, which would run CI on a different major than we require.
       - name: Build with Astro

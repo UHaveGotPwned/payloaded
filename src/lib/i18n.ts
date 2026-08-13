@@ -13,6 +13,8 @@ export const strings = {
     sources: "Fuentes",
     subtypeOf: (parent: string) => `subtipo de ${parent}`,
     empty: "Todavía no hay entradas en esta sección.",
+    notFound: "Esta página no existe.",
+    backHome: "Volver al inicio",
     home: {
       description:
         "Enciclopedia estática y educativa sobre malware. Contenido conceptual y defensivo.",
@@ -60,6 +62,8 @@ export const strings = {
     sources: "Sources",
     subtypeOf: (parent: string) => `subtype of ${parent}`,
     empty: "No entries in this section yet.",
+    notFound: "This page does not exist.",
+    backHome: "Back to the home page",
     home: {
       description: "A static, educational encyclopedia of malware. Conceptual, defensive content.",
       intro:
