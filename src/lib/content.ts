@@ -67,6 +67,16 @@ export async function listEntries<C extends "malware" | "attack-vectors" | "indi
   return visible(entries.filter((entry) => splitLocale(entry.id).locale === locale));
 }
 
+/** The entry a section renders at its own root, or null when the section is a
+ *  plain list. Splitting it out here keeps every index page and slug route
+ *  agreeing on which entry that is. */
+export async function findOverview<C extends "malware" | "attack-vectors" | "indicators" | "types">(
+  collection: C,
+  locale: Locale = DEFAULT_LOCALE,
+): Promise<CollectionEntry<C> | null> {
+  return (await listEntries(collection, locale)).find((entry) => entry.data.overview) ?? null;
+}
+
 /** The same entry in the other language, or null when it has not been
  *  translated — which is what tells the toggle whether to offer itself. */
 export async function findTranslation<
