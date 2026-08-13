@@ -22,6 +22,10 @@ const entry = z.object({
   /** Runnable languages this article may fence, so the exception shows up in
    *  review. The always-safe set lives in tests/content/policy.test.ts. */
   codeBlocks: z.array(z.string()).default([]),
+  /** Renders at the section root instead of behind a link, for sections that
+   *  are one article rather than a list. It gets no slug page of its own, so
+   *  the text still lives at exactly one URL. */
+  overview: z.boolean().default(false),
 });
 
 /** Shared with the guard: two implementations would drift and duplicate

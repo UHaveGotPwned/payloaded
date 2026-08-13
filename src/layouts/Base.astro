@@ -5,6 +5,8 @@ import "../styles/chrome.css";
 import "../styles/content.css";
 import Taskbar from "../components/Taskbar.astro";
 import StatusLine from "../components/StatusLine.astro";
+import { DEFAULT_LOCALE, type Locale } from "../lib/integrity";
+import { pathFor } from "../lib/i18n";
 import fontMono from "../assets/fonts/ibm-plex-mono-400.woff2?url";
 import fontSans from "../assets/fonts/ibm-plex-sans-400.woff2?url";
 
@@ -12,35 +14,46 @@ interface Props {
 	title: string;
 	description?: string;
 	active?: string;
-	lang?: string;
 	statusFacts?: (string | null | undefined | false)[];
 	statusMode?: string;
+	locale?: Locale;
+	/** Shared slug of this page in the other language, when it has one. */
+	alternate?: string;
 }
 
-const { title, description, active, lang = "es", statusFacts, statusMode } = Astro.props;
+const {
+	title,
+	description,
+	active,
+	statusFacts,
+	statusMode,
+	locale = DEFAULT_LOCALE,
+	alternate,
+} = Astro.props;
 
 // Trailing slash stripped so `${base}/path` never yields "//path", which a
 // browser would read as a protocol-relative URL. Matters if base becomes "/".
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : undefined;
 
-// Built here so Taskbar never touches routing or BASE_URL.
+// Built here so Taskbar never touches routing or BASE_URL. Labels stay English
+// in both languages: they are chrome, not content.
 const sections = [
-	{ id: "home", label: "[_/_]", href: `${base}/` },
-	{ id: "malware", label: "Malware", href: `${base}/malware` },
-	{ id: "types", label: "Types", href: `${base}/types` },
+	{ id: "home", label: "[_/_]", href: pathFor(base, locale) },
+	{ id: "malware", label: "Malware", href: pathFor(base, locale, "malware") },
+	{ id: "types", label: "Types", href: pathFor(base, locale, "types") },
 	{
 		id: "attack-vectors",
 		label: "Attack vector",
 		labelShort: "AV",
-		href: `${base}/attack-vectors`,
+		href: pathFor(base, locale, "attack-vectors"),
 	},
-	{ id: "indicators", label: "IOC/IOA", href: `${base}/indicators` },
+	{ id: "indicators", label: "IOC/IOA", href: pathFor(base, locale, "indicators") },
 ];
 ---
 
 <!doctype html>
-<html lang={lang}>
+<html lang={locale}>
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -50,7 +63,7 @@ const sections = [
 		{canonical && <link rel="canonical" href={canonical} />}
 		<meta property="og:site_name" content="Payloaded" />
 		<meta property="og:type" content="website" />
-		<meta property="og:locale" content="es_ES" />
+		<meta property="og:locale" content={locale === "es" ? "es_ES" : "en_US"} />
 		<meta property="og:title" content={title} />
 		{description && <meta property="og:description" content={description} />}
 		{canonical && <meta property="og:url" content={canonical} />}
@@ -64,7 +77,13 @@ const sections = [
 		<main id="content">
 			<slot />
 		</main>
-		<StatusLine facts={statusFacts} mode={statusMode} />
+		<StatusLine
+			facts={statusFacts}
+			mode={statusMode}
+			locale={locale}
+			alternate={alternate}
+			section={active}
+		/>
 		<Taskbar items={sections} active={active} />
 	</body>
 </html>

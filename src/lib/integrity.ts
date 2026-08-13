@@ -1,11 +1,35 @@
 /** No `astro:content` imports on purpose: the collection config and the guard
  *  both need these, and tests get them without spinning up Astro. */
 
-/** Ids stay flat so a URL never depends on where the file sits. */
+export const LOCALES = ["es", "en"] as const;
+export type Locale = (typeof LOCALES)[number];
+
+/** Shown when no language is asked for. Everything else about the two is
+ *  symmetric: same folders, same ids, same URLs. */
+export const DEFAULT_LOCALE: Locale = "es";
+
+export function isLocale(value: string): value is Locale {
+  return (LOCALES as readonly string[]).includes(value);
+}
+
+/** Every entry lives under its language, so the locale always leads the id.
+ *  Below that, ids stay flat: `index` takes the name of its folder, any other
+ *  file its own, and a URL never depends on where the file sits. */
 export function idFromPath(relative: string): string {
   const segments = relative.replace(/\.mdx?$/, "").split("/");
-  const name = segments.pop() ?? relative;
-  return name === "index" ? (segments.pop() ?? name) : name;
+  const locale = segments.shift() ?? "";
+  const name = segments.pop() ?? locale;
+  const flat = name === "index" ? (segments.pop() ?? locale) : name;
+  return segments.length === 0 && flat === locale ? locale : `${locale}/${flat}`;
+}
+
+/** Splits an id into its language and the slug shared across translations —
+ *  the pairing the language toggle needs. */
+export function splitLocale(id: string): { locale: Locale; slug: string } {
+  const [head, ...rest] = id.split("/");
+  return isLocale(head) && rest.length > 0
+    ? { locale: head, slug: rest.join("/") }
+    : { locale: DEFAULT_LOCALE, slug: id };
 }
 
 export interface Clash {
@@ -50,23 +74,30 @@ export function findBrokenReferences(
   const errors: string[] = [];
 
   for (const type of types) {
-    if (!families.has(type.family)) {
-      errors.push(`types/${type.id}: family "${type.family}" does not exist`);
-    }
+    const { locale } = splitLocale(type.id);
+
+    // A reference into another language resolves fine and builds green, but
+    // renders that language's labels mid-article. Only this check catches it.
+    const check = (kind: string, ref: string, exists: boolean) => {
+      if (!exists) {
+        errors.push(`types/${type.id}: ${kind} "${ref}" does not exist`);
+      } else if (splitLocale(ref).locale !== locale) {
+        errors.push(`types/${type.id}: ${kind} "${ref}" belongs to another language`);
+      }
+    };
+
+    check("family", type.family, families.has(type.family));
 
     if (type.parent !== undefined) {
       const parent = byId.get(type.parent);
-      if (!parent) {
-        errors.push(`types/${type.id}: parent "${type.parent}" does not exist`);
-      } else if (parent.parent !== undefined) {
+      check("parent", type.parent, parent !== undefined);
+      if (parent?.parent !== undefined) {
         errors.push(`types/${type.id}: parent "${parent.id}" is itself a subtype (max depth is 1)`);
       }
     }
 
     for (const vector of type.vectors) {
-      if (!vectors.has(vector)) {
-        errors.push(`types/${type.id}: vector "${vector}" does not exist`);
-      }
+      check("vector", vector, vectors.has(vector));
     }
   }
 

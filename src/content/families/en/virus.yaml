@@ -1,0 +1,3 @@
+name: "Virus"
+tagline: "Infects system files in order to replicate through them."
+order: 2

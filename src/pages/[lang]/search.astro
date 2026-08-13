@@ -1,0 +1,156 @@
+---
+import Base from "../../layouts/Base.astro";
+import Window from "../../components/Window.astro";
+import type { GetStaticPaths } from "astro";
+import Prompt from "../../components/Prompt.astro";
+import { LOCALES } from "../../lib/integrity";
+import { pathFor, strings } from "../../lib/i18n";
+
+export const getStaticPaths = (async () =>
+	LOCALES.map((lang) => ({ params: { lang }, props: { locale: lang } }))) satisfies GetStaticPaths;
+
+const { locale } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const t = strings[locale].search;
+---
+
+{/* `active` is what builds the toggle URL; no taskbar item claims "search". */}
+<Base
+	title={t.title}
+	description={t.description}
+	statusMode="SEARCH"
+	locale={locale}
+	active="search"
+	alternate=""
+>
+	<Window>
+		<Prompt>{t.prompt}</Prompt>
+
+		<form class="search-form" action={pathFor(base, locale, "search")} method="get" role="search">
+			<label class="visually-hidden" for="q">{t.label}</label>
+			<input
+				class="search-form__input"
+				id="q"
+				name="q"
+				type="search"
+				autocomplete="off"
+				placeholder={t.placeholder}
+			/>
+			<button class="search-form__submit" type="submit">{t.submit}</button>
+		</form>
+
+		<p class="search-status" data-search-status aria-live="polite"></p>
+		<div
+			data-search-results
+			data-pagefind-src={`${base}/pagefind/pagefind.js`}
+			data-idle={t.idle}
+			data-running={t.running}
+			data-none={t.none}
+			data-one={t.one}
+			data-many={t.many}
+			data-failed={t.failed}
+		>
+		</div>
+	</Window>
+</Base>
+
+{
+	/* is:inline keeps this out of the bundler. Vite rewrites a dynamic import into
+    its preload helper and leaves an unreplaced __VITE_PRELOAD__ behind, which
+    throws at runtime; untouched, the native import() just works. The trade-off
+    is plain JS and the base arriving through a data attribute. */
+}
+<script is:inline>
+	(function () {
+		var status = document.querySelector("[data-search-status]");
+		var results = document.querySelector("[data-search-results]");
+		var field = document.querySelector("#q");
+		if (!status || !results || !field) return;
+
+		var text = results.dataset;
+		var query = (new URLSearchParams(location.search).get("q") || "").trim();
+		field.value = query;
+
+		/* The toggle href is fixed at build time, so without this a language
+		   switch from a results page would silently drop what was searched. */
+		var toggle = document.querySelector(".status__lang");
+		if (toggle && query) {
+			toggle.setAttribute("href", toggle.getAttribute("href") + location.search);
+		}
+
+		if (!query) {
+			status.textContent = text.idle;
+			return;
+		}
+
+		function say(template, n) {
+			return template.replace("{q}", query).replace("{n}", n);
+		}
+
+		function escapeHtml(value) {
+			return value.replace(/[&<>"]/g, function (c) {
+				return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
+			});
+		}
+
+		status.textContent = say(text.running);
+
+		import(results.dataset.pagefindSrc)
+			.then(function (pagefind) {
+				return pagefind.options
+					? pagefind.options({ excerptLength: 30 }).then(function () {
+							return pagefind;
+						})
+					: pagefind;
+			})
+			.then(function (pagefind) {
+				return pagefind.search(query);
+			})
+			.then(function (found) {
+				return Promise.all(
+					found.results.slice(0, 20).map(function (r) {
+						return r.data();
+					}),
+				);
+			})
+			.then(function (hits) {
+				/* Pagefind falls back to character-level matching, so a term absent from
+				   the corpus still returns pages whose only highlight is a letter or two.
+				   A real hit highlights most of the query; that length is the filter. */
+				var least = Math.max(2, Math.floor(query.length / 2));
+				var real = hits.filter(function (hit) {
+					var marks = hit.excerpt.match(/<mark>(.*?)<\/mark>/g) || [];
+					return marks.some(function (m) {
+						return m.replace(/<\/?mark>/g, "").length >= least;
+					});
+				});
+
+				if (!real.length) {
+					status.textContent = say(text.none);
+					return;
+				}
+
+				status.textContent = say(real.length === 1 ? text.one : text.many, real.length);
+				results.innerHTML =
+					'<ul class="entry-menu">' +
+					real
+						.map(function (hit) {
+							return (
+								'<li class="entry-menu__item"><a class="entry-menu__link" href="' +
+								hit.url +
+								'">' +
+								escapeHtml(hit.meta.title || hit.url) +
+								'</a><p class="entry-menu__tagline">' +
+								hit.excerpt +
+								"</p></li>"
+							);
+						})
+						.join("") +
+					"</ul>";
+			})
+			.catch(function (error) {
+				status.textContent = text.failed;
+				console.error("[search]", error);
+			});
+	})();
+</script>

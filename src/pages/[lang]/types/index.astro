@@ -1,0 +1,46 @@
+---
+import type { GetStaticPaths } from "astro";
+import Base from "../../../layouts/Base.astro";
+import Window from "../../../components/Window.astro";
+import Prompt from "../../../components/Prompt.astro";
+import EntryMenu from "../../../components/EntryMenu.astro";
+import { assertContentIntegrity, listEntries, listFamilies } from "../../../lib/content";
+import { LOCALES, splitLocale } from "../../../lib/integrity";
+import { count, pathFor, strings } from "../../../lib/i18n";
+
+export const getStaticPaths = (async () => {
+	await assertContentIntegrity();
+	return LOCALES.map((lang) => ({ params: { lang }, props: { locale: lang } }));
+}) satisfies GetStaticPaths;
+
+const { locale } = Astro.props;
+const t = strings[locale];
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+
+const families = await listFamilies(locale);
+const types = await listEntries("types", locale);
+
+// A family is browsable only if it has an entry to land on.
+const items = families
+	.filter((family) => types.some((type) => type.id === family.id))
+	.map((family) => ({
+		id: family.id,
+		label: family.data.name,
+		tagline: family.data.tagline,
+		href: pathFor(base, locale, "types", splitLocale(family.id).slug),
+	}));
+---
+
+<Base
+	title="Types · Payloaded"
+	active="types"
+	locale={locale}
+	alternate=""
+	statusFacts={[count(items.length, "entry", locale)]}
+	statusMode="TYPES"
+>
+	<Window>
+		<Prompt>Types</Prompt>
+		{items.length > 0 ? <EntryMenu items={items} /> : <p>{t.empty}</p>}
+	</Window>
+</Base>

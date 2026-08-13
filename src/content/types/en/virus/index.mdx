@@ -1,0 +1,43 @@
+---
+# Example article: placeholder content that exercises the schema, not the final text.
+title: "Virus"
+summary: "The first malware family: it has to infect system files in order to replicate, following a four-phase life cycle."
+order: 2
+draft: false
+family: "en/virus"
+vectors:
+  - "en/social-engineering"
+  - "en/removable-devices"
+notableCases:
+  - "Brain (1986) — considered the first PC virus, spread by floppy disk"
+  - "Melissa (1999) — macro virus that forwarded itself to email contacts"
+  - "CIH / Chernobyl (1998) — went as far as overwriting the BIOS, bricking the machine"
+sources:
+  - "TFM NEMESIS, §3.3.1"
+---
+
+import Figure from "../../../../components/Figure.astro";
+import virusLifecycle from "./images/virus-lifecycle.png";
+
+**Computer viruses** were the first kind of malware to exist. Like their biological namesakes they need a host: a file on the machine to attach themselves to in order to duplicate and become persistent. Their goals range from corrupting systems and disrupting services to downloading further malware. They are commonly distributed by email, pirated software, SMS and infected documents.
+
+## Life cycle
+
+<Figure
+  src={virusLifecycle}
+  alt="The virus's four phases in sequence: dormant, propagation, activation and execution"
+  caption="The four phases, in order"
+/>
+
+A virus goes through four phases before releasing its payload:
+
+1. **Dormant phase.** The virus stays inactive and hidden, waiting to be triggered.
+2. **Propagation phase.** The "viral" phase: it self-replicates across the system. During replication its code may vary subtly to hinder detection, leaving mutated copies scattered around the machine.
+3. **Activation phase.** Triggered by a user action that may bear no apparent relation to the virus (the fifth boot after infection, for instance). That decoupling in time masks where the infection came from.
+4. **Execution phase.** The virus runs its malicious payload.
+
+## Classification
+
+Viruses are grouped by where they live and how they persist. The most relevant case for analysis is the **resident virus**, which loads into memory and survives a reboot; it gets its own entry because of the sheer number of persistence mechanisms it uses, each of which is in turn a specific place to go looking for it.
+
+> Key difference from worms: a virus needs a host file and help to spread; a worm is self-sufficient and travels the network on its own.

@@ -9,6 +9,8 @@ export default defineConfig({
   site: "https://uhavegotpwned.github.io",
   base,
   // Opt-in per file: .md and .mdx coexist in the same collection.
+  // The root carries no language, so it hands over to the default one.
+  redirects: { "/": "/payloaded/es" },
   integrations: [mdx()],
   // Lets articles link with plain "/types/ransomware": the plugin adds the base,
   // so a root-relative link in Markdown no longer 404s under the Pages subpath.
