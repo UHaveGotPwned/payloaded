@@ -131,8 +131,20 @@ codeBlocks:
 Declaring a language is not a licence to publish a payload: rule 1 still
 applies. The declaration exists so a reviewer is told where to look.
 
-`npm test` enforces all of this, along with defanged IoCs and the absence of
-absolute internal links.
+`npm test` enforces all of this, along with defanged IoCs.
+
+#### Linking between articles
+
+Write internal links from the site root and ignore the deployment subpath — a
+remark plugin prefixes the base at build time:
+
+```markdown
+See [Ransomware de cifrado](/types/encryption-ransomware).
+```
+
+Note the id, not the folder: `types/ransomware/encryption-ransomware.md` is
+served at `/types/encryption-ransomware`. `npm test` rejects a link whose target
+does not exist, so a typo fails the build instead of shipping a dead link.
 
 ### License
 
@@ -255,8 +267,20 @@ codeBlocks:
 Declarar un lenguaje no autoriza a publicar un payload: la regla 1 sigue
 vigente. La declaración existe para avisar a quien revisa de dónde mirar.
 
-`npm test` comprueba todo esto, junto con los IoC defanged y la ausencia de
-enlaces internos absolutos.
+`npm test` comprueba todo esto, junto con los IoC defanged.
+
+#### Enlazar entre artículos
+
+Escribe los enlaces internos desde la raíz del sitio y olvídate del subpath de
+despliegue: un plugin de remark añade la base en tiempo de build.
+
+```markdown
+Ver [Ransomware de cifrado](/types/encryption-ransomware).
+```
+
+Fíjate en que se usa el id, no la carpeta: `types/ransomware/encryption-ransomware.md`
+se sirve en `/types/encryption-ransomware`. `npm test` rechaza un enlace cuyo
+destino no exista, así que una errata rompe el build en vez de publicarse muerta.
 
 ### Licencia
 
