@@ -1,0 +1,24 @@
+---
+import Base from "../layouts/Base.astro";
+import Window from "../components/Window.astro";
+import Prompt from "../components/Prompt.astro";
+import { DEFAULT_LOCALE, LOCALES } from "../lib/integrity";
+import { pathFor, strings } from "../lib/i18n";
+
+// Served for any unmatched path, so it cannot know which language was wanted:
+// it offers both rather than guessing. Lives outside [lang] for the same reason.
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+---
+
+<Base title="404 · Payloaded" active="" locale={DEFAULT_LOCALE} statusMode="404">
+	<Window>
+		<Prompt>404</Prompt>
+		{
+			LOCALES.map((locale) => (
+				<p lang={locale}>
+					{strings[locale].notFound} <a href={pathFor(base, locale)}>{strings[locale].backHome}</a>
+				</p>
+			))
+		}
+	</Window>
+</Base>

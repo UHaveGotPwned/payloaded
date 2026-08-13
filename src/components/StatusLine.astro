@@ -61,6 +61,7 @@ const t = strings[locale].bar;
 			autocomplete="off"
 			spellcheck="false"
 			placeholder={t.placeholder}
+			data-placeholder-short={t.placeholderShort}
 			data-search-input
 		/>
 		<button type="button" class="status__clear" data-search-close>
@@ -109,6 +110,19 @@ const t = strings[locale].bar;
 	const close = document.querySelector<HTMLButtonElement>("[data-search-close]");
 
 	if (trigger && form && input && close) {
+		/* The field is ~16 characters wide on a phone, so the full hint arrives
+		   truncated. Swapped here rather than in CSS, which cannot reach an
+		   attribute, and kept live so rotating the device corrects it. */
+		const long = input.placeholder;
+		const short = input.dataset.placeholderShort;
+		const narrow = window.matchMedia("(max-width: 34rem)");
+		const fit = () => {
+			if (short) input.placeholder = narrow.matches ? short : long;
+		};
+
+		fit();
+		narrow.addEventListener("change", fit);
+
 		const open = () => {
 			form.hidden = false;
 			trigger.hidden = true;

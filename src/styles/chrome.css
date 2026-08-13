@@ -59,7 +59,7 @@
 }
 
 /* Matches the taller bottom padding `main` reserves once the Taskbar wraps. */
-@media (max-width: 28rem) {
+@media (max-width: 24rem) {
   .window::before {
     bottom: calc(var(--taskbar-height) * 2 + var(--space) * 2);
   }
@@ -106,6 +106,18 @@
      occupies flow space. */
   padding-top: calc(var(--bar-height) + var(--space) * 3);
   padding-bottom: calc(var(--space) * 6);
+}
+
+/* On a 320px phone the frame and this padding take 64px — a fifth of the
+   screen — leaving 256px of line. Halving the side padding buys most of that
+   back while keeping the text clear of the border. The top keeps clearing the
+   title bar: that part is not decoration. */
+@media (max-width: 34rem) {
+  .window__body {
+    padding: calc(var(--space) * 1.5);
+    padding-top: calc(var(--bar-height) + var(--space) * 2);
+    padding-bottom: calc(var(--space) * 4);
+  }
 }
 
 /* Margin in em so the gap tracks the title, which scales with the viewport. */
@@ -312,11 +324,15 @@
   white-space: nowrap;
 }
 
-@media (max-width: 28rem) {
+@media (max-width: 24rem) {
   .status {
     bottom: calc(var(--taskbar-height) * 2 + var(--space) * 2);
   }
+}
 
+/* Horizontal, not vertical: the facts yield to the search field long before
+   the Taskbar runs out of room. */
+@media (max-width: 28rem) {
   .status__facts {
     display: none;
   }
@@ -380,7 +396,10 @@
   text-decoration: none;
 }
 
-.taskbar__sep {
+/* In CSS rather than markup so the last item never trails one, and so the
+   glyph stays out of the accessibility tree without needing aria-hidden. */
+.taskbar__item:not(:last-child)::after {
+  content: "/";
   color: var(--ink-dim);
 }
 
@@ -397,6 +416,13 @@
 
   .taskbar__label--short {
     display: inline;
+  }
+
+  /* Shortening the labels alone still leaves the row needing ~28.6rem, which
+     wraps just above the 28rem where the frame reserves a second row's height.
+     Dropping a step closes that gap: one row now fits well below the reserve. */
+  .taskbar {
+    font-size: 0.9rem;
   }
 }
 

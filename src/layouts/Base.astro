@@ -36,6 +36,26 @@ const {
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : undefined;
 
+// Search engines read these, not the hreflang on the toggle's own link. Only
+// emitted where a translation exists, for the same reason the toggle hides
+// itself: a hreflang pointing at a 404 is worse than none. Absolute by spec.
+const other: Locale = locale === "es" ? "en" : "es";
+
+// Trailing slash included: an hreflang has to name the same URL the target page
+// calls canonical, and Astro's canonical carries one. Without it the two
+// spellings read as different pages and the pairing is ignored.
+const alternateHref = (lang: Locale) =>
+	new URL(`${pathFor(base, lang, active ?? "", alternate ?? "")}/`, Astro.site).href;
+
+const alternates =
+	Astro.site && alternate !== undefined
+		? [
+				{ lang: locale, href: alternateHref(locale) },
+				{ lang: other, href: alternateHref(other) },
+				{ lang: "x-default", href: alternateHref(DEFAULT_LOCALE) },
+			]
+		: [];
+
 // Built here so Taskbar never touches routing or BASE_URL. Labels stay English
 // in both languages: they are chrome, not content.
 const sections = [
@@ -61,6 +81,7 @@ const sections = [
 		<title>{title}</title>
 		{description && <meta name="description" content={description} />}
 		{canonical && <link rel="canonical" href={canonical} />}
+		{alternates.map((alt) => <link rel="alternate" hreflang={alt.lang} href={alt.href} />)}
 		<meta property="og:site_name" content="Payloaded" />
 		<meta property="og:type" content="website" />
 		<meta property="og:locale" content={locale === "es" ? "es_ES" : "en_US"} />
