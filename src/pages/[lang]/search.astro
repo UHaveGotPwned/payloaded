@@ -83,8 +83,16 @@ const t = strings[locale].search;
 			return;
 		}
 
+		/* Function replacements, not strings: a query of "$&" or "$`" would
+		   otherwise be read as a backreference and expand into the message. */
 		function say(template, n) {
-			return template.replace("{q}", query).replace("{n}", n);
+			return template
+				.replace("{q}", function () {
+					return query;
+				})
+				.replace("{n}", function () {
+					return n;
+				});
 		}
 
 		function escapeHtml(value) {
@@ -135,9 +143,13 @@ const t = strings[locale].search;
 					'<ul class="entry-menu">' +
 					real
 						.map(function (hit) {
+							/* hit.url is safe today only because highlightParam is unset;
+							   setting it would fold the raw query into this attribute.
+							   hit.excerpt goes in unescaped by design: Pagefind builds it
+							   from its escaped copy and adds the <mark> tags itself. */
 							return (
 								'<li class="entry-menu__item"><a class="entry-menu__link" href="' +
-								hit.url +
+								escapeHtml(hit.url) +
 								'">' +
 								escapeHtml(hit.meta.title || hit.url) +
 								'</a><p class="entry-menu__tagline">' +

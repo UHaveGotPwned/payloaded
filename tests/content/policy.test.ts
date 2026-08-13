@@ -81,6 +81,26 @@ function allowedLanguages(text: string): string[] {
   return inline ? inline[1].split(",").map((s) => s.trim().replace(/^"|"$/g, "")) : [];
 }
 
+/** The body with everything Markdown already neutralises taken out: fenced and
+ *  inline code both reach the page escaped, and an article about HTML malware
+ *  has to be able to quote a payload. What is left renders live. */
+function livingBody(text: string): string {
+  return text
+    .split(/^---$/m)
+    .slice(2)
+    .join("---")
+    .replace(/^```[\s\S]*?^```/gm, "")
+    .replace(/`[^`\n]*`/g, "");
+}
+
+/** Astro renders raw HTML in Markdown as HTML: a `<script>` in an article is a
+ *  script on the published page, and there is no CSP on Pages to catch it.
+ *  Lowercase only — an .mdx component is capitalised and compiles to Astro. */
+const RAW_HTML = /<\/?[a-z][a-z0-9-]*(\s[^>]*)?>/g;
+
+/** Markdown keeps whatever scheme the author writes, `javascript:` included. */
+const DANGEROUS_URL = /\]\(\s*(javascript|data|vbscript):/gi;
+
 describe("content policy", () => {
   it("finds articles to check", () => {
     expect(files.length).toBeGreaterThan(0);
@@ -109,6 +129,14 @@ describe("content policy", () => {
   it.each(files)("$path only uses code blocks it is cleared for", ({ text }) => {
     const declared = new Set([...SAFE_LANGUAGES, ...allowedLanguages(text)]);
     expect(fences(text).filter((lang) => lang && !declared.has(lang))).toEqual([]);
+  });
+
+  it.each(files)("$path writes no raw HTML outside code", ({ text }) => {
+    expect(livingBody(text).match(RAW_HTML) ?? []).toEqual([]);
+  });
+
+  it.each(files)("$path links to no executable scheme", ({ text }) => {
+    expect(livingBody(text).match(DANGEROUS_URL) ?? []).toEqual([]);
   });
 
   // remarkBaseLinks adds the base, so "/types/virus" is now the way to write an
