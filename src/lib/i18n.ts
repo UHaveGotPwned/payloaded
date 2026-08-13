@@ -29,6 +29,9 @@ export const strings = {
       trigger: "buscar",
       label: "Buscar en la wiki",
       placeholder: "escribe y pulsa Enter",
+      /** El campo se queda en ~16 caracteres en móvil, y ahí no hay Enter:
+       *  el teclado virtual ofrece su propio botón de búsqueda. */
+      placeholderShort: "escribe…",
       close: "Cerrar la búsqueda",
     },
     search: {
@@ -78,6 +81,7 @@ export const strings = {
       trigger: "search",
       label: "Search the wiki",
       placeholder: "type and press Enter",
+      placeholderShort: "type…",
       close: "Close the search",
     },
     search: {
