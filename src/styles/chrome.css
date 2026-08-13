@@ -380,7 +380,10 @@
   text-decoration: none;
 }
 
-.taskbar__sep {
+/* In CSS rather than markup so the last item never trails one, and so the
+   glyph stays out of the accessibility tree without needing aria-hidden. */
+.taskbar__item:not(:last-child)::after {
+  content: "/";
   color: var(--ink-dim);
 }
 
@@ -397,6 +400,13 @@
 
   .taskbar__label--short {
     display: inline;
+  }
+
+  /* Shortening the labels alone still leaves the row needing ~28.6rem, which
+     wraps just above the 28rem where the frame reserves a second row's height.
+     Dropping a step closes that gap: one row now fits well below the reserve. */
+  .taskbar {
+    font-size: 0.9rem;
   }
 }
 
