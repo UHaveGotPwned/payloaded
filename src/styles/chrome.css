@@ -338,6 +338,20 @@
   }
 }
 
+/* While searching on a phone the field is the only thing that matters: the
+   language toggle and the mode flag step aside and it takes the whole bar,
+   instead of pushing them off the right edge. */
+@media (max-width: 34rem) {
+  .status--searching .status__end {
+    display: none;
+  }
+
+  .status--searching .status__form {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+}
+
 .shell-heading {
   color: var(--ink);
 }
@@ -471,21 +485,37 @@
 }
 
 /* Same vertical padding as the trigger, so both controls end up the same height. */
+/* Both halves stay put and the same size, so only the light moves. 55% of --ink
+   is the darkest the unlit half can go and still clear AA at 4.81:1. */
 .status__lang-code {
   padding: 0.1em 0.6em;
+  color: color-mix(in srgb, var(--ink) 55%, var(--surface));
+  transition:
+    background-color 140ms ease,
+    color 140ms ease,
+    box-shadow 140ms ease;
 }
 
-.status__lang-code--current {
-  background: color-mix(in srgb, var(--ink) 12%, transparent);
-  color: var(--accent);
-}
-
-.status__lang-code--target {
+.status__lang-code + .status__lang-code {
   border-left: 1px solid color-mix(in srgb, var(--ink) 20%, transparent);
 }
 
-.status__lang:hover .status__lang-code--target,
-.status__lang:focus-visible .status__lang-code--target {
+/* The lit half. The bleed is the same phosphor idiom as the prompt: without it
+   the accent reads as a filled cell rather than as something switched on. */
+.status__lang-code--on {
   background: var(--accent);
   color: var(--accent-ink);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--accent) 55%, transparent);
+}
+
+/* Hovering previews the throw: the dark half warms up without lighting fully. */
+.status__lang:hover .status__lang-code:not(.status__lang-code--on),
+.status__lang:focus-visible .status__lang-code:not(.status__lang-code--on) {
+  color: var(--accent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .status__lang-code {
+    transition: none;
+  }
 }
