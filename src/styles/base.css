@@ -102,10 +102,10 @@ main {
   padding-bottom: calc(var(--taskbar-height) + var(--space) * 2);
 }
 
-/* With the abbreviated label the Taskbar fits one row down to ~26rem, so two
-   rows are only reserved below that (§5). Margin left on purpose: under-
-   reserving overlaps content, over-reserving only adds a little space. */
-@media (max-width: 28rem) {
+/* Abbreviated labels plus the smaller type keep the Taskbar on one row down to
+   ~22.7rem, so two rows are only reserved below that. Margin left on purpose:
+   under-reserving overlaps content, over-reserving only adds a little space. */
+@media (max-width: 24rem) {
   main {
     padding-bottom: calc(var(--taskbar-height) * 2 + var(--space) * 2);
   }
