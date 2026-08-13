@@ -1,13 +1,17 @@
-import { readFileSync, readdirSync, statSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
+import { idFromPath } from "../../src/lib/integrity";
 
 /** The content policy (spec §1) is the project's hardest rule, and reviewing it
  *  by eye will not survive migrating a whole thesis. */
 
 const ROOT = "src/content";
 
+/** A collection with no entries yet has no folder either: git cannot track an
+ *  empty directory, so it never survives a clone. */
 function articles(dir = ROOT): string[] {
+  if (!existsSync(dir)) return [];
   return readdirSync(dir).flatMap((name) => {
     const path = join(dir, name);
     if (statSync(path).isDirectory()) return articles(path);
@@ -16,6 +20,19 @@ function articles(dir = ROOT): string[] {
 }
 
 const files = articles().map((path) => ({ path, text: readFileSync(path, "utf8") }));
+
+/** Every page the site serves, derived from the content rather than listed by
+ *  hand so a new entry is reachable without touching this file. */
+const ROUTES = new Set([
+  "",
+  "/search",
+  ...["malware", "types", "attack-vectors", "indicators"].flatMap((collection) => [
+    `/${collection}`,
+    ...articles(join(ROOT, collection)).map(
+      (path) => `/${collection}/${idFromPath(path.slice(join(ROOT, collection).length + 1))}`,
+    ),
+  ]),
+]);
 
 /** Read-only evidence: an analyst can study these, nobody can run them.
  *  Executable languages are declared per article via `codeBlocks`. */
@@ -92,9 +109,11 @@ describe("content policy", () => {
     expect(fences(text).filter((lang) => lang && !declared.has(lang))).toEqual([]);
   });
 
-  it.each(files)("$path uses no absolute internal links", ({ text }) => {
-    // They would 404 under the GitHub Pages subpath.
+  // remarkBaseLinks adds the base, so "/types/virus" is now the way to write an
+  // internal link. What it cannot do is invent a page that was never authored.
+  it.each(files)("$path only links to entries that exist", ({ text }) => {
     const body = text.split(/^---$/m).slice(2).join("---");
-    expect(body).not.toMatch(/\]\(\//);
+    const links = [...body.matchAll(/\]\((\/[^)#\s]*)/g)].map((m) => m[1].replace(/\/$/, ""));
+    expect(links.filter((link) => !ROUTES.has(link))).toEqual([]);
   });
 });
