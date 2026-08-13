@@ -146,6 +146,29 @@ codeBlocks:
 Declaring a language is not a licence to publish a payload: rule 1 still
 applies. The declaration exists so a reviewer is told where to look.
 
+#### Raw HTML in articles
+
+Astro renders HTML written in Markdown as HTML, so a `<script>` in an article
+becomes a script on the published site — and GitHub Pages serves no CSP to
+catch it. **Raw HTML outside code is rejected**, as are `javascript:`, `data:`
+and `vbscript:` link targets.
+
+Quoting HTML payloads is still possible, because Markdown already neutralises
+the two places it belongs:
+
+````markdown
+Inline, as `<script>alert(1)</script>`, or fenced:
+
+```html
+<script>
+  alert(1);
+</script>
+```
+````
+
+Both reach the page escaped. `.mdx` components are unaffected — they are
+capitalised and compile to Astro rather than being passed through.
+
 `npm test` enforces all of this, along with defanged IoCs.
 
 #### Linking between articles
@@ -287,6 +310,29 @@ codeBlocks:
 
 Declarar un lenguaje no autoriza a publicar un payload: la regla 1 sigue
 vigente. La declaración existe para avisar a quien revisa de dónde mirar.
+
+#### HTML crudo en los artículos
+
+Astro renderiza como HTML lo que se escribe en Markdown, así que un `<script>`
+en un artículo pasa a ser un script en el sitio publicado — y GitHub Pages no
+sirve ninguna CSP que lo frene. **Se rechaza el HTML crudo fuera de código**, y
+también los enlaces con esquema `javascript:`, `data:` o `vbscript:`.
+
+Citar payloads en HTML sigue siendo posible, porque Markdown ya neutraliza los
+dos sitios donde corresponde:
+
+````markdown
+En línea, como `<script>alert(1)</script>`, o en un bloque:
+
+```html
+<script>
+  alert(1);
+</script>
+```
+````
+
+Ambos llegan escapados a la página. Los componentes `.mdx` no se ven afectados:
+van en mayúscula y compilan a Astro en vez de pasar tal cual.
 
 `npm test` comprueba todo esto, junto con los IoC defanged.
 
