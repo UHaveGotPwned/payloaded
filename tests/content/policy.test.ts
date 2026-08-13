@@ -1,7 +1,7 @@
 import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { idFromPath } from "../../src/lib/integrity";
+import { LOCALES, idFromPath, splitLocale } from "../../src/lib/integrity";
 
 /** The content policy (spec §1) is the project's hardest rule, and reviewing it
  *  by eye will not survive migrating a whole thesis. */
@@ -22,15 +22,17 @@ function articles(dir = ROOT): string[] {
 const files = articles().map((path) => ({ path, text: readFileSync(path, "utf8") }));
 
 /** Every page the site serves, derived from the content rather than listed by
- *  hand so a new entry is reachable without touching this file. */
+ *  hand so a new entry is reachable without touching this file. The id keeps
+ *  the language at the front; the URL puts it before the collection instead. */
 const ROUTES = new Set([
-  "",
-  "/search",
+  ...LOCALES.flatMap((locale) => [`/${locale}`, `/${locale}/search`]),
   ...["malware", "types", "attack-vectors", "indicators"].flatMap((collection) => [
-    `/${collection}`,
-    ...articles(join(ROOT, collection)).map(
-      (path) => `/${collection}/${idFromPath(path.slice(join(ROOT, collection).length + 1))}`,
-    ),
+    ...LOCALES.map((locale) => `/${locale}/${collection}`),
+    ...articles(join(ROOT, collection)).map((path) => {
+      const id = idFromPath(path.slice(join(ROOT, collection).length + 1));
+      const { locale, slug } = splitLocale(id);
+      return `/${locale}/${collection}/${slug}`;
+    }),
   ]),
 ]);
 

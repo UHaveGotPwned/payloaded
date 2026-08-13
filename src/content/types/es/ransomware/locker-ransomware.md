@@ -4,10 +4,10 @@ title: "Ransomware de bloqueo"
 summary: "Bloquea el acceso al dispositivo en lugar de cifrar los datos: aparatoso, pero mucho menos destructivo que el de cifrado."
 order: 2
 draft: false
-family: "ransomware"
-parent: "ransomware"
+family: "es/ransomware"
+parent: "es/ransomware"
 vectors:
-  - "social-engineering"
+  - "es/social-engineering"
 notableCases:
   - "Reveton (2012) — se hacía pasar por un aviso policial para justificar la 'multa'"
   - "WinLocker — familia temprana que bloqueaba el escritorio en Windows"

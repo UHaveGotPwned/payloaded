@@ -1,30 +1,56 @@
 ---
-import Base from "../layouts/Base.astro";
-import Window from "../components/Window.astro";
-import Prompt from "../components/Prompt.astro";
+import Base from "../../layouts/Base.astro";
+import Window from "../../components/Window.astro";
+import type { GetStaticPaths } from "astro";
+import Prompt from "../../components/Prompt.astro";
+import { LOCALES } from "../../lib/integrity";
+import { pathFor, strings } from "../../lib/i18n";
 
+export const getStaticPaths = (async () =>
+	LOCALES.map((lang) => ({ params: { lang }, props: { locale: lang } }))) satisfies GetStaticPaths;
+
+const { locale } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const t = strings[locale].search;
 ---
 
-<Base title="Buscar · Payloaded" description="Buscar en la wiki." statusMode="SEARCH">
+{/* `active` is what builds the toggle URL; no taskbar item claims "search". */}
+<Base
+	title={t.title}
+	description={t.description}
+	statusMode="SEARCH"
+	locale={locale}
+	active="search"
+	alternate=""
+>
 	<Window>
-		<Prompt>Buscar</Prompt>
+		<Prompt>{t.prompt}</Prompt>
 
-		<form class="search-form" action={`${base}/search`} method="get" role="search">
-			<label class="visually-hidden" for="q">Términos de búsqueda</label>
+		<form class="search-form" action={pathFor(base, locale, "search")} method="get" role="search">
+			<label class="visually-hidden" for="q">{t.label}</label>
 			<input
 				class="search-form__input"
 				id="q"
 				name="q"
 				type="search"
 				autocomplete="off"
-				placeholder="ransomware, phishing, persistencia…"
+				placeholder={t.placeholder}
 			/>
-			<button class="search-form__submit" type="submit">Buscar</button>
+			<button class="search-form__submit" type="submit">{t.submit}</button>
 		</form>
 
 		<p class="search-status" data-search-status aria-live="polite"></p>
-		<div data-search-results data-pagefind-src={`${base}/pagefind/pagefind.js`}></div>
+		<div
+			data-search-results
+			data-pagefind-src={`${base}/pagefind/pagefind.js`}
+			data-idle={t.idle}
+			data-running={t.running}
+			data-none={t.none}
+			data-one={t.one}
+			data-many={t.many}
+			data-failed={t.failed}
+		>
+		</div>
 	</Window>
 </Base>
 
@@ -41,12 +67,24 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 		var field = document.querySelector("#q");
 		if (!status || !results || !field) return;
 
+		var text = results.dataset;
 		var query = (new URLSearchParams(location.search).get("q") || "").trim();
 		field.value = query;
 
+		/* The toggle href is fixed at build time, so without this a language
+		   switch from a results page would silently drop what was searched. */
+		var toggle = document.querySelector(".status__lang");
+		if (toggle && query) {
+			toggle.setAttribute("href", toggle.getAttribute("href") + location.search);
+		}
+
 		if (!query) {
-			status.textContent = "Escribe algo para buscar.";
+			status.textContent = text.idle;
 			return;
+		}
+
+		function say(template, n) {
+			return template.replace("{q}", query).replace("{n}", n);
 		}
 
 		function escapeHtml(value) {
@@ -55,7 +93,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 			});
 		}
 
-		status.textContent = "Buscando “" + query + "”…";
+		status.textContent = say(text.running);
 
 		import(results.dataset.pagefindSrc)
 			.then(function (pagefind) {
@@ -88,12 +126,11 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 				});
 
 				if (!real.length) {
-					status.textContent = "Sin resultados para “" + query + "”.";
+					status.textContent = say(text.none);
 					return;
 				}
 
-				status.textContent =
-					real.length + " resultado" + (real.length === 1 ? "" : "s") + " para “" + query + "”.";
+				status.textContent = say(real.length === 1 ? text.one : text.many, real.length);
 				results.innerHTML =
 					'<ul class="entry-menu">' +
 					real
@@ -112,7 +149,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 					"</ul>";
 			})
 			.catch(function (error) {
-				status.textContent = "No se pudo cargar el buscador.";
+				status.textContent = text.failed;
 				console.error("[search]", error);
 			});
 	})();

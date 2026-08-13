@@ -4,6 +4,7 @@ import Window from "../components/Window.astro";
 import Prompt from "../components/Prompt.astro";
 import Breadcrumb from "../components/Breadcrumb.astro";
 import EduNotice from "../components/EduNotice.astro";
+import type { Locale } from "../lib/integrity";
 
 interface Crumb {
 	label: string;
@@ -17,9 +18,21 @@ interface Props {
 	breadcrumb?: Crumb[];
 	statusFacts?: (string | null | undefined | false)[];
 	statusMode?: string;
+	locale?: Locale;
+	/** Shared slug of the same entry in the other language, when it exists. */
+	alternate?: string;
 }
 
-const { title, description, active, breadcrumb = [], statusFacts, statusMode } = Astro.props;
+const {
+	title,
+	description,
+	active,
+	breadcrumb = [],
+	statusFacts,
+	statusMode,
+	locale,
+	alternate,
+} = Astro.props;
 ---
 
 <Base
@@ -28,6 +41,8 @@ const { title, description, active, breadcrumb = [], statusFacts, statusMode } =
 	active={active}
 	statusFacts={statusFacts}
 	statusMode={statusMode}
+	locale={locale}
+	alternate={alternate}
 >
 	<Window>
 		{breadcrumb.length > 0 && <Breadcrumb items={breadcrumb} />}

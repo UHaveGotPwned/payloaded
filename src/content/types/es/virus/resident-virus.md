@@ -4,10 +4,10 @@ title: "Virus residente"
 summary: "Se carga en memoria y sobrevive al reinicio: su ventaja es la persistencia, y ahí está también su rastro."
 order: 1
 draft: false
-family: "virus"
-parent: "virus"
+family: "es/virus"
+parent: "es/virus"
 vectors:
-  - "removable-devices"
+  - "es/removable-devices"
 notableCases:
   - "CIH / Chernobyl (1998) — residente en memoria, llegó a sobrescribir la BIOS de los equipos afectados"
 sources:

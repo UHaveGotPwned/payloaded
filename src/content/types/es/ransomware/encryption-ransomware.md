@@ -4,10 +4,10 @@ title: "Ransomware de cifrado"
 summary: "El subtipo más común: cifra el máximo de archivos sin inutilizar el sistema operativo y después exige el rescate."
 order: 1
 draft: false
-family: "ransomware"
-parent: "ransomware"
+family: "es/ransomware"
+parent: "es/ransomware"
 vectors:
-  - "social-engineering"
+  - "es/social-engineering"
 sources:
   - "TFM NEMESIS, §3.3.5"
 ---

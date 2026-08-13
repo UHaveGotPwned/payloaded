@@ -4,10 +4,10 @@ title: "Virus"
 summary: "La primera familia de malware: necesita infectar archivos del sistema para replicarse, siguiendo un ciclo de vida de cuatro fases."
 order: 2
 draft: false
-family: "virus"
+family: "es/virus"
 vectors:
-  - "social-engineering"
-  - "removable-devices"
+  - "es/social-engineering"
+  - "es/removable-devices"
 notableCases:
   - "Brain (1986) — considerado el primer virus para PC, se propagaba por disquete"
   - "Melissa (1999) — macrovirus que se reenviaba a los contactos del correo"
@@ -16,7 +16,7 @@ sources:
   - "TFM NEMESIS, §3.3.1"
 ---
 
-import Figure from "../../../components/Figure.astro";
+import Figure from "../../../../components/Figure.astro";
 import virusLifecycle from "./images/virus-lifecycle.png";
 
 Los **virus informáticos** fueron el primer tipo de malware en existir. Como sus homólogos biológicos, necesitan un huésped: un archivo del equipo al que adherirse para duplicarse y hacerse persistentes. Sus objetivos van desde corromper sistemas e interrumpir servicios hasta descargar malware adicional. Se distribuyen habitualmente por correo electrónico, software pirata, SMS y documentos infectados.

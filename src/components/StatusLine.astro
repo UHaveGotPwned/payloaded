@@ -1,13 +1,24 @@
 ---
+import { DEFAULT_LOCALE, type Locale } from "../lib/integrity";
+import { pathFor, strings } from "../lib/i18n";
+
 interface Props {
 	/** Empty values are dropped, so callers can pass conditionals unfiltered. */
 	facts?: (string | null | undefined | false)[];
 	mode?: string;
+	locale?: Locale;
+	/** Shared slug of this page in the other language; absent means untranslated,
+	 *  and the toggle stays hidden rather than offering a dead link. */
+	alternate?: string;
+	section?: string;
 }
 
-const { facts = [], mode } = Astro.props;
+const { facts = [], mode, locale = DEFAULT_LOCALE, alternate, section = "" } = Astro.props;
+const other: Locale = locale === "es" ? "en" : "es";
 const shown = facts.filter((fact): fact is string => Boolean(fact));
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const alternateHref = alternate === undefined ? null : pathFor(base, other, section, alternate);
+const t = strings[locale].bar;
 ---
 
 <div class="status" data-search>
@@ -24,7 +35,8 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 	    by tap on mobile, where there is no keyboard to press "/" on. */
 	}
 	<button type="button" class="status__trigger" data-search-open>
-		<span class="status__key" aria-hidden="true">/</span> buscar
+		<span class="status__key" aria-hidden="true">/</span>
+		<span>{t.trigger}</span>
 	</button>
 
 	{
@@ -33,13 +45,13 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 	}
 	<form
 		class="status__form"
-		action={`${base}/search`}
+		action={pathFor(base, locale, "search")}
 		method="get"
 		role="search"
 		hidden
 		data-search-form
 	>
-		<label class="visually-hidden" for="search-input">Buscar en la wiki</label>
+		<label class="visually-hidden" for="search-input">{t.label}</label>
 		<span class="status__key" aria-hidden="true">/</span>
 		<input
 			class="status__input"
@@ -48,22 +60,46 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 			type="search"
 			autocomplete="off"
 			spellcheck="false"
-			placeholder="escribe y pulsa Enter"
+			placeholder={t.placeholder}
 			data-search-input
 		/>
 		<button type="button" class="status__clear" data-search-close>
 			<span aria-hidden="true">✕</span>
-			<span class="visually-hidden">Cerrar la búsqueda</span>
+			<span class="visually-hidden">{t.close}</span>
 		</button>
 	</form>
 
 	{
-		mode && (
-			<span class="status__mode" aria-hidden="true">
-				{mode}
-			</span>
-		)
+		/* One cell for both: as separate grid children they claimed the same
+	    column and stacked into a second row, growing the whole bar. */
 	}
+	<div class="status__end">
+		{
+			alternateHref && (
+				<a
+					class="status__lang"
+					href={alternateHref}
+					hreflang={other}
+					aria-label={strings[other].switchTo}
+				>
+					<span class="status__lang-code status__lang-code--current" aria-hidden="true">
+						{locale}
+					</span>
+					<span class="status__lang-code status__lang-code--target" aria-hidden="true">
+						{other}
+					</span>
+				</a>
+			)
+		}
+
+		{
+			mode && (
+				<span class="status__mode" aria-hidden="true">
+					{mode}
+				</span>
+			)
+		}
+	</div>
 </div>
 
 <script>

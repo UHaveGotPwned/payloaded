@@ -181,7 +181,8 @@
    :not([hidden]) is load-bearing — a bare `display: flex` overrides the hidden
    attribute and leaves both the trigger and the form on screen forever. */
 .status__trigger:not([hidden]),
-.status__form:not([hidden]) {
+.status__form:not([hidden]),
+.status__lang {
   display: flex;
   align-items: center;
   gap: 0.5em;
@@ -196,7 +197,9 @@
 }
 
 .status__trigger:hover,
-.status__form:focus-within {
+.status__form:focus-within,
+.status__lang:hover,
+.status__lang:focus-visible {
   border-color: var(--accent);
 }
 
@@ -293,16 +296,15 @@
   color: var(--ink-dim);
 }
 
-/* The facts only yield where there is genuinely no room for both. */
-@media (max-width: 48rem) {
-  .status--searching .status__facts {
-    display: none;
-  }
+.status__end {
+  grid-column: 3;
+  justify-self: end;
+  display: flex;
+  align-items: center;
+  gap: calc(var(--space) * 0.75);
 }
 
 .status__mode {
-  grid-column: 3;
-  justify-self: end;
   padding: 0 0.5em;
   background: var(--accent);
   color: var(--accent-ink);
@@ -427,4 +429,37 @@
 /* Same dim tone as the Taskbar's: it is the same symbol doing the same job. */
 .breadcrumb__sep {
   color: var(--ink-dim);
+}
+
+/* Same dark well as the search trigger, so the two controls read as one family,
+   but split into two tabs. The padding moves to the segments: they have to fill
+   the well edge to edge for the lit one to read as a tab rather than a label.
+   Hidden whenever the page has no translation, so it never offers a dead end. */
+.status__lang {
+  padding: 0;
+  gap: 0;
+  overflow: hidden;
+  text-decoration: none;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+/* Same vertical padding as the trigger, so both controls end up the same height. */
+.status__lang-code {
+  padding: 0.1em 0.6em;
+}
+
+.status__lang-code--current {
+  background: color-mix(in srgb, var(--ink) 12%, transparent);
+  color: var(--accent);
+}
+
+.status__lang-code--target {
+  border-left: 1px solid color-mix(in srgb, var(--ink) 20%, transparent);
+}
+
+.status__lang:hover .status__lang-code--target,
+.status__lang:focus-visible .status__lang-code--target {
+  background: var(--accent);
+  color: var(--accent-ink);
 }

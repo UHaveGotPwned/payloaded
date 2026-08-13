@@ -4,11 +4,11 @@ title: "Leakware (doxware)"
 summary: "No cobra por descifrar, sino por no publicar: el rescate se paga para evitar la filtración de los datos robados."
 order: 3
 draft: false
-family: "ransomware"
-parent: "ransomware"
+family: "es/ransomware"
+parent: "es/ransomware"
 vectors:
-  - "social-engineering"
-  - "unpatched-vulnerabilities"
+  - "es/social-engineering"
+  - "es/unpatched-vulnerabilities"
 notableCases:
   - "Maze (2019) — popularizó el sitio de filtraciones como método de presión"
 sources:

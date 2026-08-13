@@ -1,0 +1,79 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { getEntry, render } from "astro:content";
+import Entry from "../layouts/Entry.astro";
+import EntryMenu from "./EntryMenu.astro";
+import ShellHeading from "./ShellHeading.astro";
+import MetaList from "./MetaList.astro";
+import { splitLocale, type Locale } from "../lib/integrity";
+import { count, pathFor, strings } from "../lib/i18n";
+
+interface Props {
+	entry: CollectionEntry<"types">;
+	children: CollectionEntry<"types">[];
+	locale: Locale;
+	/** Present only when this entry has been translated. */
+	alternate?: string;
+}
+
+const { entry, children, locale, alternate } = Astro.props;
+const t = strings[locale];
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const { Content } = await render(entry);
+
+const parent = entry.data.parent ? await getEntry(entry.data.parent) : undefined;
+const vectors = await Promise.all(entry.data.vectors.map((vector) => getEntry(vector)));
+
+const href = (id: string) => pathFor(base, locale, "types", splitLocale(id).slug);
+
+// The flat URL hides the hierarchy, so the breadcrumb is where it surfaces.
+const breadcrumb = [
+	{ label: "Types", href: pathFor(base, locale, "types") },
+	...(parent ? [{ label: parent.data.title, href: href(parent.id) }] : []),
+	{ label: entry.data.title },
+];
+
+const subtypes = children.map((child) => ({
+	id: child.id,
+	label: child.data.title,
+	tagline: child.data.summary,
+	href: href(child.id),
+}));
+
+const vectorLinks = vectors
+	.filter((vector) => vector !== undefined)
+	.map((vector) => ({
+		label: vector.data.title,
+		href: pathFor(base, locale, "attack-vectors", splitLocale(vector.id).slug),
+	}));
+---
+
+<Entry
+	title={entry.data.title}
+	description={entry.data.summary}
+	active="types"
+	breadcrumb={breadcrumb}
+	locale={locale}
+	alternate={alternate}
+	statusFacts={[
+		parent ? t.subtypeOf(parent.data.title) : count(subtypes.length, "subtype", locale),
+		count(vectorLinks.length, "vector", locale),
+		count(entry.data.notableCases.length, "case", locale),
+	]}
+	statusMode="TYPES"
+>
+	<Content />
+
+	{
+		subtypes.length > 0 && (
+			<>
+				<ShellHeading id="subtypes">{t.subtypes}</ShellHeading>
+				<EntryMenu items={subtypes} />
+			</>
+		)
+	}
+
+	<MetaList heading={t.vectors} items={vectorLinks} />
+	<MetaList heading={t.cases} items={entry.data.notableCases} />
+	<MetaList heading={t.sources} items={entry.data.sources} tone="quiet" />
+</Entry>

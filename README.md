@@ -57,36 +57,51 @@ intended for, and must not be used for, any malicious or illegal purpose.
 ### Project Structure
 
 Every article lives under `src/content/`. **Folders mirror the data model:
-where entries form a hierarchy, folders show it; where they don't, the files
-sit flat.**
+language first, then hierarchy where entries have one; where they don't, the
+files sit flat.**
 
 ```
 src/content/
-├── families/                    flat YAML — taxonomy labels, no article body
-│   ├── ransomware.yaml
-│   └── virus.yaml
+├── families/                    YAML — taxonomy labels, no article body
+│   ├── es/
+│   │   ├── ransomware.yaml
+│   │   └── virus.yaml
+│   └── en/
+│       └── ransomware.yaml
 ├── types/                       grouped by family: entries carry a `parent`
-│   ├── ransomware/
-│   │   ├── index.md               the family entry
-│   │   ├── leakware.md            a subtype
-│   │   └── locker-ransomware.md
-│   └── virus/
-│       ├── index.mdx
-│       ├── resident-virus.md
-│       └── images/                assets sit beside the entries that use them
-├── attack-vectors/              flat — no vector contains another
-├── malware/                     flat
-└── indicators/                  flat
+│   ├── es/
+│   │   ├── ransomware/
+│   │   │   ├── index.md           the family entry
+│   │   │   ├── leakware.md        a subtype
+│   │   │   └── locker-ransomware.md
+│   │   └── virus/
+│   │       ├── index.mdx
+│   │       ├── resident-virus.md
+│   │       └── images/            assets sit beside the entries that use them
+│   └── en/
+│       └── ransomware/
+│           └── index.md
+├── attack-vectors/              flat under each language
+├── malware/                     flat under each language
+└── indicators/                  flat under each language
 ```
 
-Two consequences worth knowing before you move anything:
+Four consequences worth knowing before you move anything:
 
-- **Folders are for organization only.** Ids are flattened, so
-  `types/ransomware/leakware.md` is served at `/types/leakware`. Reclassifying
-  an entry by dragging it to another folder never changes its URL.
-- **Two files can therefore collide.** `types/virus/foo.md` and
-  `types/ransomware/foo.md` would both claim the id `foo`. The build fails
-  loudly if that happens, rather than dropping one silently.
+- **Every entry sits under a language, with no exceptions.** Spanish is the
+  default the root redirects to, but it gets no shortcut: `es/` is as explicit
+  in the tree as `en/`, and both appear in the URL.
+- **Below the language, folders are for organization only.** Ids are flattened,
+  so `types/es/ransomware/leakware.md` is served at `/es/types/leakware`.
+  Reclassifying an entry by dragging it to another family never changes its URL.
+- **Two files can therefore collide.** `types/es/virus/foo.md` and
+  `types/es/ransomware/foo.md` would both claim the id `es/foo`. The build fails
+  loudly if that happens, rather than dropping one silently. Translations never
+  collide: the language leads the id.
+- **References must stay inside their language.** A `family`, `parent` or
+  `vectors` entry written as `es/ransomware` from an English article resolves
+  fine but would render Spanish labels mid-page, so the build rejects it.
+  Translating an article means its taxonomy exists in that language too.
 
 `.md` and `.mdx` coexist in the same collection. Use `.mdx` only when an entry
 needs a component — a figure anchored to a specific passage, for instance.
@@ -139,12 +154,18 @@ Write internal links from the site root and ignore the deployment subpath — a
 remark plugin prefixes the base at build time:
 
 ```markdown
-See [Ransomware de cifrado](/types/encryption-ransomware).
+See [Ransomware de cifrado](/es/types/encryption-ransomware).
 ```
 
-Note the id, not the folder: `types/ransomware/encryption-ransomware.md` is
-served at `/types/encryption-ransomware`. `npm test` rejects a link whose target
-does not exist, so a typo fails the build instead of shipping a dead link.
+Two things to get right, both enforced by `npm test`:
+
+- **Start with the language.** Link to the article in the language you are
+  writing in; there is no unprefixed URL to fall back on.
+- **Use the id, not the folder.** `types/es/ransomware/encryption-ransomware.md`
+  is served at `/es/types/encryption-ransomware` — the family folder does not
+  appear in the URL.
+
+A link whose target does not exist fails the build instead of shipping dead.
 
 ### License
 
@@ -271,8 +292,8 @@ vigente. La declaración existe para avisar a quien revisa de dónde mirar.
 
 #### Enlazar entre artículos
 
-Escribe los enlaces internos desde la raíz del sitio y olvídate del subpath de
-despliegue: un plugin de remark añade la base en tiempo de build.
+Escribe los enlaces internos desde la raíz del sitio y olvídate del subpath del
+despliegue — un plugin de remark añade el base al compilar:
 
 ```markdown
 Ver [Ransomware de cifrado](/types/encryption-ransomware).
@@ -280,7 +301,8 @@ Ver [Ransomware de cifrado](/types/encryption-ransomware).
 
 Fíjate en que se usa el id, no la carpeta: `types/ransomware/encryption-ransomware.md`
 se sirve en `/types/encryption-ransomware`. `npm test` rechaza un enlace cuyo
-destino no exista, así que una errata rompe el build en vez de publicarse muerta.
+destino no existe, así que una errata rompe el build en lugar de publicar un
+enlace muerto.
 
 ### Licencia
 

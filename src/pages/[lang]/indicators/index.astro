@@ -1,0 +1,38 @@
+---
+import type { GetStaticPaths } from "astro";
+import Base from "../../../layouts/Base.astro";
+import Window from "../../../components/Window.astro";
+import Prompt from "../../../components/Prompt.astro";
+import EntryMenu from "../../../components/EntryMenu.astro";
+import { listEntries } from "../../../lib/content";
+import { LOCALES, splitLocale } from "../../../lib/integrity";
+import { count, pathFor, strings } from "../../../lib/i18n";
+
+export const getStaticPaths = (async () =>
+	LOCALES.map((lang) => ({ params: { lang }, props: { locale: lang } }))) satisfies GetStaticPaths;
+
+const { locale } = Astro.props;
+const t = strings[locale];
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+
+const items = (await listEntries("indicators", locale)).map((entry) => ({
+	id: entry.id,
+	label: `${entry.data.kind.toUpperCase()} — ${entry.data.title}`,
+	tagline: entry.data.summary,
+	href: pathFor(base, locale, "indicators", splitLocale(entry.id).slug),
+}));
+---
+
+<Base
+	title="IOC/IOA · Payloaded"
+	active="indicators"
+	locale={locale}
+	alternate=""
+	statusFacts={[count(items.length, "entry", locale)]}
+	statusMode="IOC/IOA"
+>
+	<Window>
+		<Prompt>IOC/IOA</Prompt>
+		{items.length > 0 ? <EntryMenu items={items} /> : <p>{t.empty}</p>}
+	</Window>
+</Base>

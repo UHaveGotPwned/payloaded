@@ -1,0 +1,39 @@
+---
+import type { GetStaticPaths } from "astro";
+import Base from "../../layouts/Base.astro";
+import Window from "../../components/Window.astro";
+import Prompt from "../../components/Prompt.astro";
+import ShellHeading from "../../components/ShellHeading.astro";
+import { LOCALES } from "../../lib/integrity";
+import { strings } from "../../lib/i18n";
+
+export const getStaticPaths = (async () =>
+	LOCALES.map((lang) => ({ params: { lang }, props: { locale: lang } }))) satisfies GetStaticPaths;
+
+const { locale } = Astro.props;
+const t = strings[locale].home;
+---
+
+<Base
+	title="Payloaded"
+	description={t.description}
+	active=""
+	locale={locale}
+	alternate=""
+	statusFacts={[t.fact, "TFM NEMESIS · UCLM 2025"]}
+	statusMode="HOME"
+>
+	<Window>
+		<Prompt>get_payloaded</Prompt>
+		<ShellHeading>Welcome to</ShellHeading>
+		<p>{t.intro}</p>
+		<ShellHeading>About us</ShellHeading>
+		<p>{t.basedOn}</p>
+		<dl class="credits">
+			<dt>{t.thesisAuthor}</dt>
+			<dd>Juan Caravantes Algaba</dd>
+			<dt>{t.siteAuthor}</dt>
+			<dd>UHaveGotPwned</dd>
+		</dl>
+	</Window>
+</Base>

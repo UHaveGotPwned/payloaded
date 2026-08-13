@@ -1,0 +1,35 @@
+---
+import type { GetStaticPaths } from "astro";
+import TypeArticle from "../../../components/TypeArticle.astro";
+import { assertContentIntegrity, findTranslation, listEntries } from "../../../lib/content";
+import { LOCALES, splitLocale } from "../../../lib/integrity";
+
+export const getStaticPaths = (async () => {
+	await assertContentIntegrity();
+	const pages = [];
+
+	for (const lang of LOCALES) {
+		const types = await listEntries("types", lang);
+		for (const entry of types) {
+			const { slug } = splitLocale(entry.id);
+			pages.push({
+				params: { lang, slug },
+				props: {
+					entry,
+					children: types.filter((t) => t.data.parent?.id === entry.id),
+					locale: lang,
+					alternate: (await findTranslation("types", entry.id, lang === "es" ? "en" : "es"))
+						? slug
+						: undefined,
+				},
+			});
+		}
+	}
+
+	return pages;
+}) satisfies GetStaticPaths;
+
+const { entry, children, locale, alternate } = Astro.props;
+---
+
+<TypeArticle entry={entry} children={children} locale={locale} alternate={alternate} />

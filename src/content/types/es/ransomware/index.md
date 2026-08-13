@@ -4,11 +4,11 @@ title: "Ransomware"
 summary: "Malware de extorsión: cifra los datos de la víctima y exige un rescate, generalmente en criptomonedas, por su recuperación."
 order: 1
 draft: false
-family: "ransomware"
+family: "es/ransomware"
 vectors:
-  - "social-engineering"
-  - "removable-devices"
-  - "unpatched-vulnerabilities"
+  - "es/social-engineering"
+  - "es/removable-devices"
+  - "es/unpatched-vulnerabilities"
 notableCases:
   - "WannaCry (2017) — propagación mundial aprovechando una vulnerabilidad SMB con parche disponible desde hacía dos meses"
   - "CryptoLocker (2013) — primera campaña masiva que combinó cifrado sólido con pago en criptomoneda"
