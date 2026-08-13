@@ -15,7 +15,13 @@ interface Props {
 const { items, active } = Astro.props;
 ---
 
-<nav class="taskbar" aria-label="Site sections">
+{
+	/* lang="en" on purpose: the section labels are terminal costume, English in
+	   both languages. Without it a screen reader on a Spanish page reads them
+	   with Spanish phonetics, and the attribute also records that the English is
+	   a decision rather than an oversight. */
+}
+<nav class="taskbar" lang="en" aria-label="Site sections">
 	<ul class="taskbar__list">
 		{
 			items.map((item) => (

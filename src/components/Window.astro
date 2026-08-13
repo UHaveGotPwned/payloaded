@@ -10,7 +10,8 @@ const { title = "payloaded" } = Astro.props;
 
 <div class="window">
 	<div class="window__bar">
-		<span class="window__title">{title}</span>
+		{/* A brand name, so it keeps English pronunciation whatever the page lang. */}
+		<span class="window__title" lang="en">{title}</span>
 		<span class="window__controls" aria-hidden="true">- [] X</span>
 	</div>
 	<div class="window__body">

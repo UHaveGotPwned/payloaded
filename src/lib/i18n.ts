@@ -16,6 +16,8 @@ export const strings = {
     notFound: "Esta página no existe.",
     backHome: "Volver al inicio",
     home: {
+      welcome: "Bienvenido a",
+      about: "Quiénes somos",
       description:
         "Enciclopedia estática y educativa sobre malware. Contenido conceptual y defensivo.",
       intro:
@@ -68,6 +70,8 @@ export const strings = {
     notFound: "This page does not exist.",
     backHome: "Back to the home page",
     home: {
+      welcome: "Welcome to",
+      about: "About us",
       description: "A static, educational encyclopedia of malware. Conceptual, defensive content.",
       intro:
         "A static, educational encyclopedia of malware. Everything here is conceptual and defensive: it describes what each family does and how it is detected or mitigated, never how to build one.",

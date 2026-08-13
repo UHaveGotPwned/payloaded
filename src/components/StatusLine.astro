@@ -1,5 +1,5 @@
 ---
-import { DEFAULT_LOCALE, type Locale } from "../lib/integrity";
+import { DEFAULT_LOCALE, LOCALES, type Locale } from "../lib/integrity";
 import { pathFor, strings } from "../lib/i18n";
 
 interface Props {
@@ -83,12 +83,15 @@ const t = strings[locale].bar;
 					hreflang={other}
 					aria-label={strings[other].switchTo}
 				>
-					<span class="status__lang-code status__lang-code--current" aria-hidden="true">
-						{locale}
-					</span>
-					<span class="status__lang-code status__lang-code--target" aria-hidden="true">
-						{other}
-					</span>
+					{/* Fixed order, so a position means a language and never moves. */}
+					{LOCALES.map((code) => (
+						<span
+							class:list={["status__lang-code", { "status__lang-code--on": code === locale }]}
+							aria-hidden="true"
+						>
+							{code}
+						</span>
+					))}
 				</a>
 			)
 		}
@@ -123,15 +126,22 @@ const t = strings[locale].bar;
 		fit();
 		narrow.addEventListener("change", fit);
 
+		/* The open field needs more room than the bar has on a phone: 60vw plus the
+		   toggle and the mode flag overflow it by ~38px. CSS cannot tell that the
+		   form is open, so the state goes on the bar as a class. */
+		const bar = form.closest(".status");
+
 		const open = () => {
 			form.hidden = false;
 			trigger.hidden = true;
+			bar?.classList.add("status--searching");
 			input.focus();
 		};
 
 		const dismiss = () => {
 			form.hidden = true;
 			trigger.hidden = false;
+			bar?.classList.remove("status--searching");
 			input.value = "";
 		};
 
