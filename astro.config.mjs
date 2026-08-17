@@ -31,5 +31,9 @@ export default defineConfig({
   // the safer trade until the replacement works.
   markdown: {
     remarkPlugins: [[remarkBaseLinks, { base }]],
+    // Shiki otherwise writes its theme colours as an inline style on the <pre>,
+    // which beats the stylesheet and drops a GitHub-grey box into the terminal.
+    // "css-variables" makes it emit tokens instead, resolved in tokens.css.
+    shikiConfig: { theme: "css-variables" },
   },
 });

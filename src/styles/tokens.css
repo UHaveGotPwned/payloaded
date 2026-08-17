@@ -18,6 +18,21 @@
   --danger: #e14f4f;
   --code-bg: #1c211c;
 
+  /* Shiki's "css-variables" theme reads these. Muted on purpose: a code block
+     here is usually evidence to read (a rule, a log, a diagram), not an editor
+     window, so it should not out-shout the prose around it. */
+  --astro-code-background: var(--code-bg);
+  --astro-code-foreground: var(--ink);
+  --astro-code-token-comment: #7c8a7c;
+  --astro-code-token-string: var(--accent-warm);
+  --astro-code-token-string-expression: var(--accent-warm);
+  --astro-code-token-constant: var(--accent);
+  --astro-code-token-keyword: var(--accent);
+  --astro-code-token-function: #8fd8ff;
+  --astro-code-token-parameter: var(--ink);
+  --astro-code-token-punctuation: #9aa39a;
+  --astro-code-token-link: var(--accent);
+
   /* typography */
   --font-mono: "IBM Plex Mono", "JetBrains Mono", ui-monospace, monospace;
   /* Chrome, headings and code stay mono; only running prose uses this. */

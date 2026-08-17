@@ -51,10 +51,17 @@
 .prose pre {
   /* Long defanged IoCs must scroll here, not stretch the page. */
   overflow-x: auto;
+  /* Without this the block runs to the full container while the paragraphs
+     around it stop at the measure, leaving the code stranded in a wide box. */
+  max-width: var(--measure);
   padding: calc(var(--space) * 2);
   background: var(--code-bg);
   border: 1px solid var(--ink-dim);
   border-radius: var(--window-radius);
+  /* Shiki sizes its own text; matching the inline code keeps a fence from
+     looking like a different document. */
+  font-size: 0.9em;
+  line-height: 1.5;
 }
 
 .prose pre code {
